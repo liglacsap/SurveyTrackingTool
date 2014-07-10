@@ -13,7 +13,6 @@
 #include "globals.h"
 
 
-
 extern QVector3D handPalmPosition;
 extern std::vector<QVector3D> handFingers;
 extern double fingerRadius;

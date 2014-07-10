@@ -20,7 +20,55 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="widget" native="true"/>
+      <widget class="QWidget" name="widget" native="true">
+       <layout class="QGridLayout" name="gridLayout_3">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QTabWidget" name="tabWidget">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <property name="documentMode">
+           <bool>false</bool>
+          </property>
+          <property name="tabsClosable">
+           <bool>false</bool>
+          </property>
+          <widget class="QWidget" name="tab">
+           <attribute name="title">
+            <string>2D View</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_5">
+            <item row="0" column="0">
+             <widget class="QWidget" name="widget_4" native="true"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_2">
+           <attribute name="title">
+            <string>3D View</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_4">
+            <item row="0" column="0">
+             <widget class="Paint2DWidget" name="widget_3" native="true"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="widget_2" native="true">
        <layout class="QGridLayout" name="gridLayout_2">
         <property name="leftMargin">
@@ -186,6 +234,14 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Paint2DWidget</class>
+   <extends>QWidget</extends>
+   <header>paint2dwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="icons.qrc"/>
  </resources>

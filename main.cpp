@@ -4,6 +4,7 @@
 #include <QString>
  #include <QTranslator>
 #include <QVector3D>
+#include <array>
 
 #include "globals.h"
 
@@ -11,6 +12,9 @@ QVector3D handPalmPosition;
 std::vector<QVector3D> handFingers;
 double fingerRadius;
 unsigned int markerCount;
+
+vector<QVector3D> palmPositions;
+std::vector<std::vector<QVector3D> > handFingersVector;
 
 NatNetClient* client;
 
@@ -49,9 +53,9 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
     NatNetClient* pClient = (NatNetClient*)pUserData;
     pClient->SetVerbosityLevel(0);
 
-    int i = 0;
 
-    for (i = 0; i < data->nRigidBodies; i++){
+    /*
+    for (int i = 0; i < data->nRigidBodies; i++){
         //bool bTrackingValid = data->RigidBodies[i].params & 0x01;
 
         std::vector<QVector3D> marker;
@@ -63,6 +67,8 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
             marker.push_back(QVector3D(x, y, z));
         }
 
+
+
         if (marker.size() > 2)
             handPalmPosition = calculateCircleCenter(marker[0], marker[1], marker[2]) * 100;
     }
@@ -70,20 +76,23 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
     if(isnan(handPalmPosition.x()))
         handPalmPosition = QVector3D(0, 0, 0);
 
+    palmPositions.push_back(handPalmPosition);
+*/
     handFingers.clear();
     markerCount =  data->nOtherMarkers;
-    for (i = 0; i < data->nOtherMarkers; i++){
 
+    for (int i = 0; i < data->nOtherMarkers; i++){
+        double x = data->OtherMarkers[i][0]*100;
+        double y = data->OtherMarkers[i][1]*100;
+        double z = data->OtherMarkers[i][2]*100;
 
-        double x = data->OtherMarkers[i][0];
-        double y = data->OtherMarkers[i][1];
-        double z = data->OtherMarkers[i][2];
 
         // Return if hand palm rigid body was not detected
-        if (data->nRigidBodies == 0) return;
+        //if (data->nRigidBodies == 0) return;
 
         // Filter all points and only return the points which are not related to any rigid body
         bool a = true;
+        /*
         for (int j = 0; j < data->RigidBodies[0].nMarkers; j++){
             double _x = data->RigidBodies[0].Markers[j][0];
             double _y = data->RigidBodies[0].Markers[j][1];
@@ -96,30 +105,32 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
             if (diffX < 0.001 && diffY < 0.001 && diffZ < 0.001)
                 a = false;
         }
-
+        */
         if (a){
             QVector3D vec = QVector3D(x, y, z) * 100;
-            double distance = vec.distanceToPoint(handPalmPosition);
-            if(distance > 17 && distance < 80)
-            handFingers.push_back(QVector3D(x, y, z) * 100);
+            //double distance = vec.distanceToPoint(handPalmPosition);
+            //if(distance > 17 && distance < 80){
+                handFingers.push_back(QVector3D(x, y, z));
+            //}
+
+
+
         }
-
-
     }
 
+    //if(handFingers.size() >= 3)   {
+        //fingerRadius = calculateCircleRadius(handFingers[0], handFingers[1], handFingers[2]) * 10-11; // 5.5 is the radius of a marker
 
 
-    if(handFingers.size() > 2)
-    {
-        fingerRadius = calculateCircleRadius(handFingers[0], handFingers[1], handFingers[2]) * 10-11; // 5.5 is the radius of a marker
-    }
+        handFingersVector.push_back(handFingers);
+    //}
+
 }
 
 int createClient(int iConnectionType)
 {
     // release previous server
-    if (client)
-    {
+    if (client){
         client->Uninitialize();
         delete client;
     }
@@ -135,13 +146,10 @@ int createClient(int iConnectionType)
 
     // to use a different port for commands and/or data:
     //int retCode = theClient->Initialize(szMyIPAddress, szServerIPAddress, MyServersCommandPort, MyServersDataPort);
-    if (retCode != ErrorCode_OK)
-    {
+    if (retCode != ErrorCode_OK){
         printf("Unable to connect to server.  Error code: %d. Exiting", retCode);
         return ErrorCode_Internal;
-    }
-    else
-    {
+    }else {
         // print server info
         sServerDescription ServerDescription;
         memset(&ServerDescription, 0, sizeof(ServerDescription));
@@ -154,7 +162,6 @@ int createClient(int iConnectionType)
     }
 
     return ErrorCode_OK;
-
 }
 
 
@@ -187,10 +194,17 @@ int main(int argc, char *argv[])
         msg.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
         msg.setDefaultButton(QMessageBox::Save);
         msg.setIcon(QMessageBox::Critical);
-
-        int ret = msg.exec();
+        msg.exec();
     }
 
+    /*
+    if(!ping("192.168.3.7")){
+        QMessageBox msg;
+        msg.setText("The connection to the EMS system couldn't be established \n");
+        msg.setIcon(QMessageBox::Critical);
+        msg.exec();
+    }
+    */
 
     MainWindow w;
     w.show();

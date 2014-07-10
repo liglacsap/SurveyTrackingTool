@@ -14,7 +14,10 @@ MainWindow::MainWindow(QWidget *parent) :
     take = 1;
     user = 1;
 
-    qsrand(qrand());
+    QTimer *ctimer = new QTimer(this);
+    connect(ctimer, SIGNAL(timeout()), this->ui->widget_3, SLOT(updateGL()));
+    connect(ctimer, SIGNAL(timeout()), this->ui->widget_2, SLOT(update()));
+    ctimer->start(1000/120);
 }
 
 MainWindow::~MainWindow()
@@ -35,7 +38,7 @@ void MainWindow::on_actionCalibration_triggered()
 
 void MainWindow::on_actionStart_take_triggered()
 {
-
+    handFingersVector.clear();
     time.start();
    // time.restart();
 
@@ -55,6 +58,7 @@ void MainWindow::on_actionFinish_take_triggered()
 {
 
     timer.stop();
+
 }
 
 
@@ -62,13 +66,18 @@ void MainWindow::on_actionPrevious_take_triggered()
 {
     if(take > 1)
         take--;
+
+    saveTake();
+    handFingersVector.clear();
 }
 
 void MainWindow::on_actionNext_take_triggered()
 {
+    timer.stop();
     take++;
 
     saveTake();
+    handFingersVector.clear();
 }
 
 void MainWindow::saveTake(){
@@ -92,16 +101,23 @@ void MainWindow::saveTake(){
     myfile << "X3;" << "Y3;" << "Z3;" << "Radius \n";
 
     srand(0);
-    for(int i=0; i<10000; i++){
-        for(int j=0; j<4; j++){
-            myfile << rand() / static_cast<double>( RAND_MAX ) << ";";
-            myfile << rand() / static_cast<double>( RAND_MAX ) << ";";
-            myfile << rand() / static_cast<double>( RAND_MAX );
+    for(int i=0; i<handFingersVector.size(); i++){
 
-            if(j == 3)
-                myfile << "\n";
-            else
-                myfile << ";";
+        for(int j=0; j<3; j++){
+            if(handFingersVector[i].size() > j){
+                qDebug() << handFingersVector[i].size() << "  " << j;
+                myfile << handFingersVector[i][j].x() << ";";
+                myfile << handFingersVector[i][j].y() << ";";
+                myfile << handFingersVector[i][j].z();
+
+                myfile << (j==3) ? "\n" : ";";
+            }else{
+                myfile << 0 << ";";
+                myfile << 0 << ";";
+                myfile << 0 << ";";
+
+                myfile << (j==3) ? "\n" : ";";
+            }
         }
     }
 
@@ -124,4 +140,13 @@ void MainWindow::on_actionSave_triggered()
 void MainWindow::on_actionNew_triggered()
 {
     user++;
+    handFingersVector.clear();
+}
+
+void MainWindow::on_actionRestart_take_triggered()
+{
+    handFingersVector.clear();
+    //timer.stop();
+    time.start();
+
 }

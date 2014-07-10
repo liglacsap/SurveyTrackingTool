@@ -65,25 +65,27 @@ void GLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Clear The Screen And The Depth Buffer
     glLoadIdentity();									// Reset The Current Modelview Matrix
-    gluLookAt(-40, 170, 150, -40, 170, 0, 0, 1, 0);
+    //gluLookAt(-40, 170, 150, -40, 170, 0, 0, 1, 0);
     //glTranslatef(-1.5f,0.0f,-6.0f);						// Move Left 1.5 Units And Into The Screen 6.0
-    glColor3f(1, 0, 0);
+    //glColor3f(1, 0, 0);
 
 
 
+
+    //
+
+   // glTranslatef(-1.5f,0.0f,-6.0f);
+    gluLookAt(-160,80.0f,0.0f, 0, 80, 0 ,0, 1, 0);
+    glBegin(GL_TRIANGLES);                      // Drawing Using Triangles
+        glVertex3f( 0.0f, 1.0f, 0.0f);              // Top
+        glVertex3f(-1.0f,-1.0f, 0.0f);              // Bottom Left
+        glVertex3f( 1.0f,-1.0f, 0.0f);              // Bottom Right
+    glEnd();
 
     drawBox(QVector3D(0, 0, 0), 6);
-    //drawBox(handPalmPosition*100, 6);
-    drawSphere(handPalmPosition, 6, 30, 30);
-    for(int i=0; i<handFingers.size(); i++){
-        drawSphere(handFingers[i], 1.1, 30, 30);
-    }
 
-    for(int i=0; i<balls.size(); i++){
-        glColor3f(balls[i].color.red() / 255.0f,
-                  balls[i].color.green() / 255.0f,
-                  balls[i].color.blue() / 255.0f);
-        drawSphere(balls[i].position, balls[i].radius, 20, 20);
+    for(int i=0; i<handFingers.size(); i++){
+        drawSphere(handFingers.at(i), 2, 20, 20);
     }
 }
 

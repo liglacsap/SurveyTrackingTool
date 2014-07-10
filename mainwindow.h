@@ -11,9 +11,7 @@
 #include <NatNetClient.h>
 
 #include "configurationdialog.h"
-
-#include "xlsxdocument.h"
-#include "xlsxformat.h"
+#include "globals.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,6 +32,11 @@ using namespace std;
 namespace Ui {
 class MainWindow;
 }
+
+struct Marker{
+    float position[3];
+    string name;
+};
 
 class MainWindow : public QMainWindow
 {
@@ -61,6 +64,8 @@ private slots:
 
     void on_actionNew_triggered();
 
+    void on_actionRestart_take_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -71,6 +76,8 @@ private:
     unsigned int user;
 
     void saveTake();
+
+
 };
 
 #endif // MAINWINDOW_H

@@ -11,16 +11,17 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = SurveyTrackingTool
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
         mainwindow.cpp \
     glwidget.cpp \
-    configurationdialog.cpp
+    configurationdialog.cpp \
+    paint2dwidget.cpp
 
 HEADERS  += mainwindow.h \
     glwidget.h \
     globals.h \
-    configurationdialog.h
+    configurationdialog.h \
+    paint2dwidget.h
 
 FORMS    += mainwindow.ui \
     configurationdialog.ui
@@ -31,5 +32,3 @@ win32:LIBS += -L"C:\Users\lab\Desktop\Gil Engel Bachelor Thesis\NatNet_SDK_2.6\l
 
 RESOURCES += \
     icons.qrc
-
-include(xlsx/src/xlsx/qtxlsx.pri)
