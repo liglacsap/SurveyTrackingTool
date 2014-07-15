@@ -16,15 +16,16 @@ unsigned int markerCount;
 vector<QVector3D> palmPositions;
 std::vector<std::vector<QVector3D> > handFingersVector;
 
-NatNetClient* client;
-
+#ifdef _WIN32
+    NatNetClient* client;
+#endif
 
 double calculateCircleRadius(QVector3D p1, QVector3D p2, QVector3D p3){
     QVector3D t = p2 - p1;
     QVector3D u = p3 - p1;
     QVector3D v = p3 - p2;
 
-    QVector3D w = QVector3D::crossProduct(t, u);
+    //QVector3D w = QVector3D::crossProduct(t, u);
 
     // Formel von Wikipedia
     double radius = (t.length() * v.length() * u.length()) /
@@ -48,6 +49,7 @@ QVector3D calculateCircleCenter(QVector3D p1, QVector3D p2, QVector3D p3){
     return a * p1 + b * p2 + g * p3;
 }
 
+#ifdef _WIN32
 void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
 {
     NatNetClient* pClient = (NatNetClient*)pUserData;
@@ -163,13 +165,14 @@ int createClient(int iConnectionType)
 
     return ErrorCode_OK;
 }
-
+#endif
 
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+#ifdef _WIN32
     int result = createClient(ConnectionType_Multicast);
     if (result != ErrorCode_OK){
         QMessageBox msg;
@@ -196,7 +199,7 @@ int main(int argc, char *argv[])
         msg.setIcon(QMessageBox::Critical);
         msg.exec();
     }
-
+#endif
     /*
     if(!ping("192.168.3.7")){
         QMessageBox msg;

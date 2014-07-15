@@ -16,7 +16,7 @@ void Paint2DWidget::paintEvent(QPaintEvent *)
 
     painter.setPen(Qt::darkGray);
     painter.setBrush(QBrush(QColor("#ecf0f1")));
-    painter.drawEllipse(QPoint(this->width() / 2, this->height() / 2), this->width() / 3, this->height() / 3);
+    painter.drawEllipse(QPoint(this->width() / 2, this->height() / 2), this->height() / 3, this->height() / 3);
 
     QPen pen;
 
@@ -28,7 +28,7 @@ void Paint2DWidget::paintEvent(QPaintEvent *)
     painter.setPen(pen);
     painter.setBrush(QBrush(QColor("#95a5a6")));
 
-    painter.drawEllipse(QPoint(this->width() / 2, this->height() / 2), this->width() / 4, this->height() / 4);
+    painter.drawEllipse(QPoint(this->width() / 2, this->height() / 2), this->height() / 4, this->height() / 4);
 
     pen.setStyle(Qt::SolidLine);
     pen.setWidth(1);
@@ -37,5 +37,5 @@ void Paint2DWidget::paintEvent(QPaintEvent *)
     pen.setJoinStyle(Qt::RoundJoin);
     painter.setPen(pen);
     painter.setBrush(QColor("#bdc3c7"));
-    painter.drawEllipse(QPoint(this->width() / 2, this->height() / 2), this->width() / 5, this->height() / 5);
+    painter.drawEllipse(QPoint(this->width() / 2, this->height() / 2), this->height() / 5, this->height() / 5);
 }

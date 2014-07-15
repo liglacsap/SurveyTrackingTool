@@ -7,9 +7,10 @@
 #include <QDebug>
 #include <QFileDialog>
 
-#include <NatNetTypes.h>
-#include <NatNetClient.h>
-
+#ifdef _WIN32
+    #include <NatNetTypes.h>
+    #include <NatNetClient.h>
+#endif
 #include "configurationdialog.h"
 #include "globals.h"
 
@@ -25,6 +26,8 @@
 #include <string>
 #include <time.h>
 #include <sstream>
+
+#include "udpsocket.h"
 
 using namespace std;
 
@@ -72,12 +75,15 @@ private:
     QTimer timer;
     QTime time;
 
+    UDPSocket *socket;
+
     unsigned int take;
     unsigned int user;
 
     void saveTake();
 
-
+    EMSTransmission transmission;
+    ConfigurationDialog dialog;
 };
 
 #endif // MAINWINDOW_H

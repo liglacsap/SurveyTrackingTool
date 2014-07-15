@@ -18,6 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ctimer, SIGNAL(timeout()), this->ui->widget_3, SLOT(updateGL()));
     connect(ctimer, SIGNAL(timeout()), this->ui->widget_2, SLOT(update()));
     ctimer->start(1000/120);
+
+    socket = new UDPSocket(this);
+    dialog.setSocket(socket);
+    dialog.setEMSTransmission(&transmission);
 }
 
 MainWindow::~MainWindow()
@@ -25,26 +29,35 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/**
+ * @brief Close the tracking tool
+ */
 void MainWindow::on_actionExit_triggered()
 {
     this->close();
 }
 
+/**
+ * @brief Show the calibration dialog
+ */
 void MainWindow::on_actionCalibration_triggered()
 {
-    ConfigurationDialog dialog;
     dialog.exec();
 }
 
+/**
+ * @brief Clears all previous saved tracked hand positions and starts a new frame
+ */
 void MainWindow::on_actionStart_take_triggered()
 {
     handFingersVector.clear();
     time.start();
-   // time.restart();
-
     timer.start();
 }
 
+/**
+ * @brief Updates all informations in the statusbar like take and elapsed time in current frame
+ */
 void MainWindow::update(){
     QString msg = "Take ";
     msg.append(QString::number(take));
@@ -54,14 +67,17 @@ void MainWindow::update(){
     ui->statusBar->showMessage(msg);
 }
 
+/**
+ * @brief Stops recording of current frame and save the received data in a textfile
+ */
 void MainWindow::on_actionFinish_take_triggered()
 {
-
     timer.stop();
-
 }
 
-
+/**
+ * @brief Saves current frame in a text file and loads the previous frame if available
+ */
 void MainWindow::on_actionPrevious_take_triggered()
 {
     if(take > 1)
@@ -71,6 +87,9 @@ void MainWindow::on_actionPrevious_take_triggered()
     handFingersVector.clear();
 }
 
+/**
+ * @brief Saves current frame in a text file and loads the next frame if available
+ */
 void MainWindow::on_actionNext_take_triggered()
 {
     timer.stop();
@@ -80,6 +99,10 @@ void MainWindow::on_actionNext_take_triggered()
     handFingersVector.clear();
 }
 
+/**
+ * @brief Creates a csv text file with all collected data from the current frame. The file name
+ * will always be "take" current take (number) "_user_" current user (number) ".csv."
+ */
 void MainWindow::saveTake(){
     string Result;
     ostringstream convert;
@@ -94,59 +117,56 @@ void MainWindow::saveTake(){
     fileName.append(convert.str());
     fileName.append(".csv");
 
-    ofstream myfile;
-    myfile.open (fileName);
-    myfile << "X;" << "Y;" << "Z;";
-    myfile << "X2;" << "Y2;" << "Z2;";
-    myfile << "X3;" << "Y3;" << "Z3;" << "Radius \n";
+    ofstream csvfile;
+    csvfile.open (fileName);
+    csvfile << "X;" << "Y;" << "Z;";
+    csvfile << "X2;" << "Y2;" << "Z2;";
+    csvfile << "X3;" << "Y3;" << "Z3;" << "Radius \n";
 
     srand(0);
-    for(int i=0; i<handFingersVector.size(); i++){
-
-        for(int j=0; j<3; j++){
+    for(unsigned int i=0; i<handFingersVector.size(); i++){
+        for(unsigned int j=0; j<3; j++){
             if(handFingersVector[i].size() > j){
                 qDebug() << handFingersVector[i].size() << "  " << j;
-                myfile << handFingersVector[i][j].x() << ";";
-                myfile << handFingersVector[i][j].y() << ";";
-                myfile << handFingersVector[i][j].z();
+                csvfile << handFingersVector[i][j].x() << ";";
+                csvfile << handFingersVector[i][j].y() << ";";
+                csvfile << handFingersVector[i][j].z();
 
-                myfile << (j==3) ? "\n" : ";";
+                csvfile << ((j==3) ? "\n" : ";");
             }else{
-                myfile << 0 << ";";
-                myfile << 0 << ";";
-                myfile << 0 << ";";
+                csvfile << 0 << ";";
+                csvfile << 0 << ";";
+                csvfile << 0 << ";";
 
-                myfile << (j==3) ? "\n" : ";";
+                csvfile << ((j==3) ? "\n" : ";");
             }
         }
     }
 
-    myfile.close();
+    csvfile.close();
 }
 
+/**
+ * @brief Not implemented yet
+ */
 void MainWindow::on_actionSave_triggered()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
-                               "",
-                               tr("Tables (*.xlsx)"));
-
-    vector<float*> position;
-
-
-
-
 }
 
+/**
+ * @brief Clears all captured values and increament the user number by one
+ */
 void MainWindow::on_actionNew_triggered()
 {
     user++;
     handFingersVector.clear();
 }
 
+/**
+ * @brief Clears all captured values and restart the frame time
+ */
 void MainWindow::on_actionRestart_take_triggered()
 {
     handFingersVector.clear();
-    //timer.stop();
     time.start();
-
 }

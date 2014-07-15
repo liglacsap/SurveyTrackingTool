@@ -108,5 +108,6 @@
         <file>icons/warning32.png</file>
         <file>icons/wordpress32.png</file>
         <file>icons/wrench32.png</file>
+        <file>icons/emblem-presentation.png</file>
     </qresource>
 </RCC>
