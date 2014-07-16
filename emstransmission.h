@@ -31,9 +31,7 @@ struct Pad{
     uint state;
 };
 
-
 using namespace std;
-
 
 class EMSTransmission
 {

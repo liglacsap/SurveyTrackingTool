@@ -22,6 +22,14 @@ MainWindow::MainWindow(QWidget *parent) :
     socket = new UDPSocket(this);
     dialog.setSocket(socket);
     dialog.setEMSTransmission(&transmission);
+
+    for(int i=0; i<10; i++){
+        Take t = {0, rand() % 20 + 1+(rand() % 10 / 10.0f)};
+
+        takes.push_back(t);
+    }
+
+    ui->lineEdit->setText(QString::number(takes.at(0).size));
 }
 
 MainWindow::~MainWindow()
@@ -85,6 +93,8 @@ void MainWindow::on_actionPrevious_take_triggered()
 
     saveTake();
     handFingersVector.clear();
+
+    ui->lineEdit->setText(QString::number(takes.at(take-1).size));
 }
 
 /**
@@ -92,11 +102,17 @@ void MainWindow::on_actionPrevious_take_triggered()
  */
 void MainWindow::on_actionNext_take_triggered()
 {
+    if(take >= takes.size())
+        return;
+
     timer.stop();
+
     take++;
 
     saveTake();
     handFingersVector.clear();
+
+    ui->lineEdit->setText(QString::number(takes.at(take-1).size));
 }
 
 /**
@@ -169,4 +185,10 @@ void MainWindow::on_actionRestart_take_triggered()
 {
     handFingersVector.clear();
     time.start();
+}
+
+void MainWindow::on_actionTake_Properties_triggered()
+{
+    TakeDialog takeDialog;
+    takeDialog.exec();
 }

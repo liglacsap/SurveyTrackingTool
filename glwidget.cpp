@@ -1,15 +1,6 @@
 #include "glwidget.h"
 
 
-std::vector<Ball> GLWidget::getBalls() const
-{
-    return balls;
-}
-
-void GLWidget::setBalls(const std::vector<Ball> &value)
-{
-    balls = value;
-}
 GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
@@ -21,7 +12,7 @@ void GLWidget::initializeGL()
 
     //glEnable(GL_TEXTURE_2D);							// Enable Texture Mapping ( NEW )
     glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
-    glClearColor(0.0f, 0.0f, 0.0f, 0.5f);				// Black Background
+    glClearColor(1.0f, 1.0f, 1.0f, 0.5f);				// Black Background
     glClearDepth(1.0f);									// Depth Buffer Setup
     glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
     glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do
@@ -29,21 +20,11 @@ void GLWidget::initializeGL()
     glEnable(GL_BLEND);
      glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Really Nice Perspective Calculations
 
-/*
-     GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-     GLfloat mat_shininess[] = { 250.0 };
-     GLfloat light_position[] = { 0.0, 0.0, -100.0, 0.0 };
-     glClearColor (0.0, 0.0, 0.0, 0.0);
-     glShadeModel (GL_SMOOTH);
 
-     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-     glEnable(GL_LIGHTING);
-     glEnable(GL_LIGHT0);
-     glEnable(GL_DEPTH_TEST);
-     */
+
+
+
 }
 
 void GLWidget::resizeGL(int width, int height)
@@ -63,30 +44,37 @@ void GLWidget::resizeGL(int width, int height)
 
 void GLWidget::paintGL()
 {
+
+    static int cnt = 0;
+    cnt ++;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Clear The Screen And The Depth Buffer
-    glLoadIdentity();									// Reset The Current Modelview Matrix
-    //gluLookAt(-40, 170, 150, -40, 170, 0, 0, 1, 0);
-    //glTranslatef(-1.5f,0.0f,-6.0f);						// Move Left 1.5 Units And Into The Screen 6.0
-    //glColor3f(1, 0, 0);
+    glLoadIdentity();
 
+    gluLookAt(-0.0f, 0.0f,-30.0f, 0, 0, 0, 0, 1, 0);
 
+    GLfloat mat_specular[] = { 1.0, 0.0, 1.0, 1.0 };
+    GLfloat mat_shininess[] = {50 };
+    glShadeModel (GL_SMOOTH);
 
+    //glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    //glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
-    //
+    GLfloat LightAmbient[]=		{ 1.0f, 1.0f, 1.0f, 1.0f };
+    GLfloat LightDiffuse[]=		{ 0.1f, 0.1f, 0.1f, 1.0f };
+    GLfloat LightPosition[]=	{ 0.0f, 0.0f, -20.0f, 1.0f };
 
-   // glTranslatef(-1.5f,0.0f,-6.0f);
-    gluLookAt(-160,80.0f,0.0f, 0, 80, 0 ,0, 1, 0);
-    glBegin(GL_TRIANGLES);                      // Drawing Using Triangles
-        glVertex3f( 0.0f, 1.0f, 0.0f);              // Top
-        glVertex3f(-1.0f,-1.0f, 0.0f);              // Bottom Left
-        glVertex3f( 1.0f,-1.0f, 0.0f);              // Bottom Right
-    glEnd();
+    glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);		// Setup The Ambient Light
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);		// Setup The Diffuse Light
+    glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);	// Position The Light
 
-    drawBox(QVector3D(0, 0, 0), 6);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT1);
 
-    for(int i=0; i<handFingers.size(); i++){
-        drawSphere(handFingers.at(i), 2, 20, 20);
-    }
+    glEnable(GL_DEPTH_TEST);
+
+    //drawBox(QVector3D(0, 0, 0), 6);
+    glColor3f(1, 0, 0);
+    drawSphere(QVector3D(0, 0, 0), 6, 30, 30);
 }
 
 QSize GLWidget::minimumSizeHint() const
@@ -105,37 +93,43 @@ void GLWidget::drawBox(QVector3D pos, float size)
     glTranslatef(pos.x(), pos.y(), pos.z());
     glScalef(size, size, size);
 
-    glBegin(GL_QUADS);									// Draw A Quad
-        glColor3f(0.0f,1.0f,0.0f);						// Set The Color To Green
-        glVertex3f( 1.0f, 1.0f,-1.0f);					// Top Right Of The Quad (Top)
-        glVertex3f(-1.0f, 1.0f,-1.0f);					// Top Left Of The Quad (Top)
-        glVertex3f(-1.0f, 1.0f, 1.0f);					// Bottom Left Of The Quad (Top)
-        glVertex3f( 1.0f, 1.0f, 1.0f);					// Bottom Right Of The Quad (Top)
+    glBegin(GL_QUADS);
+    glNormal3f( 0.0f, 0.0f, 1.0f);                  // Normal Pointing Towards Viewer
+     glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);  // Point 1 (Front)
+     glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);  // Point 2 (Front)
+     glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);  // Point 3 (Front)
+     glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);  // Point 4 (Front)
+     // Back Face
+     glNormal3f( 0.0f, 0.0f,-1.0f);                  // Normal Pointing Away From Viewer
+     glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);  // Point 1 (Back)
+     glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);  // Point 2 (Back)
+     glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);  // Point 3 (Back)
+     glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);  // Point 4 (Back)
+     // Top Face
+     glNormal3f( 0.0f, 1.0f, 0.0f);                  // Normal Pointing Up
+     glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);  // Point 1 (Top)
+     glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);  // Point 2 (Top)
+     glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);  // Point 3 (Top)
+     glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);  // Point 4 (Top)
+     // Bottom Face
+     glNormal3f( 0.0f,-1.0f, 0.0f);                  // Normal Pointing Down
+     glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);  // Point 1 (Bottom)
+     glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);  // Point 2 (Bottom)
+     glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);  // Point 3 (Bottom)
+     glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);  // Point 4 (Bottom)
+     // Right face
+     glNormal3f( 1.0f, 0.0f, 0.0f);                  // Normal Pointing Right
+     glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);  // Point 1 (Right)
+     glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);  // Point 2 (Right)
+     glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);  // Point 3 (Right)
+     glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);  // Point 4 (Right)
+     // Left Face
+     glNormal3f(-1.0f, 0.0f, 0.0f);                  // Normal Pointing Left
+     glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);  // Point 1 (Left)
+     glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);  // Point 2 (Left)
+     glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);  // Point 3 (Left)
+     glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);  // Point 4 (Left)
 
-        glVertex3f( 1.0f,-1.0f, 1.0f);					// Top Right Of The Quad (Bottom)
-        glVertex3f(-1.0f,-1.0f, 1.0f);					// Top Left Of The Quad (Bottom)
-        glVertex3f(-1.0f,-1.0f,-1.0f);					// Bottom Left Of The Quad (Bottom)
-        glVertex3f( 1.0f,-1.0f,-1.0f);					// Bottom Right Of The Quad (Bottom)
-
-        glVertex3f( 1.0f, 1.0f, 1.0f);					// Top Right Of The Quad (Front)
-        glVertex3f(-1.0f, 1.0f, 1.0f);					// Top Left Of The Quad (Front)
-        glVertex3f(-1.0f,-1.0f, 1.0f);					// Bottom Left Of The Quad (Front)
-        glVertex3f( 1.0f,-1.0f, 1.0f);					// Bottom Right Of The Quad (Front)
-
-        glVertex3f( 1.0f,-1.0f,-1.0f);					// Top Right Of The Quad (Back)
-        glVertex3f(-1.0f,-1.0f,-1.0f);					// Top Left Of The Quad (Back)
-        glVertex3f(-1.0f, 1.0f,-1.0f);					// Bottom Left Of The Quad (Back)
-        glVertex3f( 1.0f, 1.0f,-1.0f);					// Bottom Right Of The Quad (Back)
-
-        glVertex3f(-1.0f, 1.0f, 1.0f);					// Top Right Of The Quad (Left)
-        glVertex3f(-1.0f, 1.0f,-1.0f);					// Top Left Of The Quad (Left)
-        glVertex3f(-1.0f,-1.0f,-1.0f);					// Bottom Left Of The Quad (Left)
-        glVertex3f(-1.0f,-1.0f, 1.0f);					// Bottom Right Of The Quad (Left)
-
-        glVertex3f( 1.0f, 1.0f,-1.0f);					// Top Right Of The Quad (Right)
-        glVertex3f( 1.0f, 1.0f, 1.0f);					// Top Left Of The Quad (Right)
-        glVertex3f( 1.0f,-1.0f, 1.0f);					// Bottom Left Of The Quad (Right)
-        glVertex3f( 1.0f,-1.0f,-1.0f);					// Bottom Right Of The Quad (Right)
     glEnd();											// Done Drawing The Quad
     glPopMatrix();
 }

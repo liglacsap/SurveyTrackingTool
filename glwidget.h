@@ -24,7 +24,6 @@ class GLWidget : public QGLWidget
 {
     Q_OBJECT
 private:
-    std::vector<Ball> balls;
 public:
     explicit GLWidget(QWidget *parent = 0);
 
@@ -36,8 +35,7 @@ public:
 
     void drawBox(QVector3D pos, float size);
     void drawSphere(QVector3D pos, double r, int lats, int longs);
-    std::vector<Ball> getBalls() const;
-    void setBalls(const std::vector<Ball> &value);
+
 
 protected:
     void paintGL();

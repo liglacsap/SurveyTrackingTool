@@ -15,12 +15,6 @@ extern unsigned int markerCount;
 extern std::vector<QVector3D> palmPositions;
 extern std::vector<std::vector<QVector3D> > handFingersVector;
 
-struct Ball{
-    QVector3D position;
-    double radius;
-    QColor color;
-};
-
 
 
 

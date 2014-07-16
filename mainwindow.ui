@@ -19,7 +19,7 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+    <item row="1" column="0">
      <widget class="QSplitter" name="splitter">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -41,7 +41,7 @@
         <item row="0" column="0">
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <property name="documentMode">
            <bool>false</bool>
@@ -92,6 +92,73 @@
           <property name="title">
            <string>Results</string>
           </property>
+          <layout class="QGridLayout" name="gridLayout_6">
+           <item row="0" column="0">
+            <widget class="QGroupBox" name="groupBox_2">
+             <property name="title">
+              <string>Ball Properties</string>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Radius: (cm)</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEdit">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="1" column="0">
+            <widget class="QGroupBox" name="groupBox_3">
+             <property name="title">
+              <string>User</string>
+             </property>
+             <layout class="QFormLayout" name="formLayout">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>Radius: (cm)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Radius (%):</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="lineEdit_2"/>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="lineEdit_3"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
        </layout>
@@ -115,8 +182,6 @@
     </property>
     <addaction name="actionNew"/>
     <addaction name="separator"/>
-    <addaction name="actionSave"/>
-    <addaction name="actionLoad"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -125,6 +190,7 @@
      <string>Properties</string>
     </property>
     <addaction name="actionCalibration"/>
+    <addaction name="actionTake_Properties"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuProperties"/>
@@ -139,6 +205,7 @@
    <addaction name="actionNew"/>
    <addaction name="separator"/>
    <addaction name="actionCalibration"/>
+   <addaction name="actionTake_Properties"/>
    <addaction name="separator"/>
    <addaction name="actionPrevious_take"/>
    <addaction name="actionNext_take"/>
@@ -234,6 +301,15 @@
    </property>
    <property name="text">
     <string>restart take</string>
+   </property>
+  </action>
+  <action name="actionTake_Properties">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/wand32.png</normaloff>:/icons/wand32.png</iconset>
+   </property>
+   <property name="text">
+    <string>Take Properties</string>
    </property>
   </action>
  </widget>

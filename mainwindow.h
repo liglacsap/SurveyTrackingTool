@@ -12,6 +12,7 @@
     #include <NatNetClient.h>
 #endif
 #include "configurationdialog.h"
+#include "takedialog.h"
 #include "globals.h"
 
 #include <stdio.h>
@@ -30,6 +31,7 @@
 #include "udpsocket.h"
 
 using namespace std;
+
 
 
 namespace Ui {
@@ -69,6 +71,8 @@ private slots:
 
     void on_actionRestart_take_triggered();
 
+    void on_actionTake_Properties_triggered();
+
 private:
     Ui::MainWindow *ui;
 
@@ -84,6 +88,8 @@ private:
 
     EMSTransmission transmission;
     ConfigurationDialog dialog;
+
+    vector<Take> takes;
 };
 
 #endif // MAINWINDOW_H
