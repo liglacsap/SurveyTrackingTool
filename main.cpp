@@ -56,7 +56,7 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
     pClient->SetVerbosityLevel(0);
 
 
-    /*
+
     for (int i = 0; i < data->nRigidBodies; i++){
         //bool bTrackingValid = data->RigidBodies[i].params & 0x01;
 
@@ -78,8 +78,11 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
     if(isnan(handPalmPosition.x()))
         handPalmPosition = QVector3D(0, 0, 0);
 
+
+
     palmPositions.push_back(handPalmPosition);
-*/
+
+
     handFingers.clear();
     markerCount =  data->nOtherMarkers;
 
@@ -90,11 +93,11 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
 
 
         // Return if hand palm rigid body was not detected
-        //if (data->nRigidBodies == 0) return;
+       // if (data->nRigidBodies == 0) return;
 
         // Filter all points and only return the points which are not related to any rigid body
         bool a = true;
-        /*
+
         for (int j = 0; j < data->RigidBodies[0].nMarkers; j++){
             double _x = data->RigidBodies[0].Markers[j][0];
             double _y = data->RigidBodies[0].Markers[j][1];
@@ -104,28 +107,37 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
             double diffY = abs(y - _y);
             double diffZ = abs(z - _z);
 
+            //qDebug() << diffX << " " << diffY << diffZ;
             if (diffX < 0.001 && diffY < 0.001 && diffZ < 0.001)
                 a = false;
         }
-        */
-        if (a){
-            QVector3D vec = QVector3D(x, y, z) * 100;
-            //double distance = vec.distanceToPoint(handPalmPosition);
-            //if(distance > 17 && distance < 80){
+
+        //if (a){
+            QVector3D vec = QVector3D(x, y, z);
+            double distance = vec.distanceToPoint(handPalmPosition);
+
+           // if(distance > 1.7 && distance < 8.0){
                 handFingers.push_back(QVector3D(x, y, z));
             //}
 
 
 
-        }
+        //}
     }
 
-    //if(handFingers.size() >= 3)   {
-        //fingerRadius = calculateCircleRadius(handFingers[0], handFingers[1], handFingers[2]) * 10-11; // 5.5 is the radius of a marker
+    if(handFingers.size() >= 3)   {
+        double d1 = handFingers[0].distanceToPoint(handFingers[1]);
+        double d2 = handFingers[1].distanceToPoint(handFingers[2]);
+        double d3 = handFingers[2].distanceToPoint(handFingers[0]);
+        if(d1 > 30 || d2 > 30 || d3 > 30) return;
 
+       fingerRadius = calculateCircleRadius(handFingers[0], handFingers[1], handFingers[2]); // 5.5 is the radius of a marker
+        fingerRadius = (fingerRadius > 200) ? 0 : fingerRadius;
+        fingerRadius = (fingerRadius < 1.25) ? 1.25 : fingerRadius;
 
+       // qDebug() << d1 << " "<< d2 << " " << d3;
         handFingersVector.push_back(handFingers);
-    //}
+    }
 
 }
 

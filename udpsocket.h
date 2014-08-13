@@ -3,9 +3,12 @@
 
 #include <QObject>
 #include <QUdpSocket>
+#include <QtNetwork>
 
 #include <string>
 #include <ctime>
+
+#include "globals.h"
 
 using namespace std;
 

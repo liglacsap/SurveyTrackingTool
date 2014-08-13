@@ -11,25 +11,30 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
 
     timer.start(100);
-    take = 1;
+    take = 0;
     user = 1;
 
     QTimer *ctimer = new QTimer(this);
     connect(ctimer, SIGNAL(timeout()), this->ui->widget_3, SLOT(updateGL()));
-    connect(ctimer, SIGNAL(timeout()), this->ui->widget_2, SLOT(update()));
-    ctimer->start(1000/120);
+    connect(ctimer, SIGNAL(timeout()), this->ui->widget_4, SLOT(update()));
+    ctimer->start(10);
 
     socket = new UDPSocket(this);
     dialog.setSocket(socket);
     dialog.setEMSTransmission(&transmission);
 
     for(int i=0; i<10; i++){
-        Take t = {0, rand() % 20 + 1+(rand() % 10 / 10.0f)};
+        Take t = {0, rand() % 10 + 1+(rand() % 10 / 10.0f)};
 
         takes.push_back(t);
     }
 
     ui->lineEdit->setText(QString::number(takes.at(0).size));
+
+    transmission.clearMessage();
+    transmission.setMinimalChangeTime(1);
+
+    ui->widget_4->setTake(takes[take]);
 }
 
 MainWindow::~MainWindow()
@@ -73,6 +78,15 @@ void MainWindow::update(){
     msg.append(QString::number(time.elapsed() / 1000.0f));
 
     ui->statusBar->showMessage(msg);
+
+    float ps = fingerRadius / takes[take].size;
+//
+    int v = 50;//exp((1-ps) * 100 / 10)*20;
+    //qDebug() << v; //exp(ps * (-4));
+    //v = (v > 127) ? 127 : v;
+    transmission.clearMessage();
+    transmission.setIntensity(v);
+    //socket->write(transmission.getMessage());
 }
 
 /**
@@ -93,6 +107,7 @@ void MainWindow::on_actionPrevious_take_triggered()
 
     saveTake();
     handFingersVector.clear();
+    ui->widget_4->setTake(takes[take]);
 
     ui->lineEdit->setText(QString::number(takes.at(take-1).size));
 }
@@ -108,6 +123,7 @@ void MainWindow::on_actionNext_take_triggered()
     timer.stop();
 
     take++;
+    ui->widget_4->setTake(takes[take]);
 
     saveTake();
     handFingersVector.clear();
@@ -143,7 +159,6 @@ void MainWindow::saveTake(){
     for(unsigned int i=0; i<handFingersVector.size(); i++){
         for(unsigned int j=0; j<3; j++){
             if(handFingersVector[i].size() > j){
-                qDebug() << handFingersVector[i].size() << "  " << j;
                 csvfile << handFingersVector[i][j].x() << ";";
                 csvfile << handFingersVector[i][j].y() << ";";
                 csvfile << handFingersVector[i][j].z();

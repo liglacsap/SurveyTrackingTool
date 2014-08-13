@@ -48,8 +48,10 @@ void ConfigurationDialog::setEMSTransmission(EMSTransmission* transmission)
  * Fetches for each pad all values and sends them as a udp package to the digital circuit via WiFi
  */
 void ConfigurationDialog::update(){
-    if(this->isVisible())
-        socket->write(transmission->getMessage());
+    if(this->isVisible()){
+
+
+    }
 }
 
 
@@ -68,7 +70,9 @@ void ConfigurationDialog::on_onTimeBox_valueChanged(int arg1)
 
     pads[0].state = ON;
     transmission->clearMessage();
-    transmission->setIntensity(arg1);
+    transmission->setIntensity(ui->onTimeBox->value());
+    qDebug() << QString::fromStdString(transmission->getMessage());
+    socket->write(transmission->getMessage());
     //ui->lineEdit->setText(QString::fromStdString(transmission.getMessage()));
 
     //valueChanged = true;
@@ -198,7 +202,7 @@ void ConfigurationDialog::increaseCalibration(){
     transmission->clearMessage();
     transmission->setIntensity(ui->maxCalibration->value());
     //ui->lineEdit->setText(QString::fromStdString(transmission.getMessage()));
-
+    //socket->write(transmission->getMessage());
 }
 
 void ConfigurationDialog::on_pushButton_2_clicked()

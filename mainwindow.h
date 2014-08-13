@@ -32,7 +32,7 @@
 
 using namespace std;
 
-
+extern double fingerRadius;
 
 namespace Ui {
 class MainWindow;
@@ -85,6 +85,7 @@ private:
     unsigned int user;
 
     void saveTake();
+
 
     EMSTransmission transmission;
     ConfigurationDialog dialog;
