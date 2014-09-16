@@ -27,15 +27,16 @@ HEADERS  += mainwindow.h \
     paint2dwidget.h \
     emstransmission.h \
     udpsocket.h \
-    takedialog.h
+    takedialog.h \
+    csvfilehandler.h
 
 FORMS    += mainwindow.ui \
     configurationdialog.ui \
     takedialog.ui
 
-INCLUDEPATH += "C:\Users\lab\Desktop\Gil_Engel_Bachelorarbeit\NatNet_SDK_2.6\include"
+INCLUDEPATH += "C:\Users\lab\Desktop\Gil Engel Bachelor Thesis\NatNet_SDK_2.6\include"
 
-win32:LIBS += -L"C:\Users\lab\Desktop\Gil_Engel_Bachelorarbeit\NatNet_SDK_2.6\lib\x64" -lNatNetLib
+win32:LIBS += -L"C:\Users\lab\Desktop\Gil Engel Bachelor Thesis\NatNet_SDK_2.6\lib\x64" -lNatNetLib
 unix:LIBS += -lGLU
 
 RESOURCES += \

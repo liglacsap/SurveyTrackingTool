@@ -34,6 +34,8 @@ using namespace std;
 
 extern double fingerRadius;
 
+extern vector<Take> takes;
+
 namespace Ui {
 class MainWindow;
 }
@@ -79,18 +81,24 @@ private:
     QTimer timer;
     QTime time;
 
+    // for the communication with the Arduino Board / EMS System
     UDPSocket *socket;
 
+    // current take. Every user has several takes to accoumplish
     unsigned int take;
+
+    // current user. Used for the identification later in the study
     unsigned int user;
 
+    /**
+     * @brief Saves the current take in an CSV file.
+     */
     void saveTake();
 
 
     EMSTransmission transmission;
     ConfigurationDialog dialog;
 
-    vector<Take> takes;
 };
 
 #endif // MAINWINDOW_H

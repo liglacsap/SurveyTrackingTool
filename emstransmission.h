@@ -33,6 +33,9 @@ struct Pad{
 
 using namespace std;
 
+/**
+ * @brief The EMSTransmission class
+ */
 class EMSTransmission
 {
 private:

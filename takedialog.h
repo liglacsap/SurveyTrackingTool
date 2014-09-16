@@ -2,11 +2,12 @@
 #define TAKEDIALOG_H
 
 #include <QDialog>
+#include <QDebug>
+#include "globals.h"
+#include "csvfilehandler.h"
 
-struct Take{
-    float hardness;
-    float size;
-};
+extern vector<Take> takes;
+
 
 namespace Ui {
 class TakeDialog;
@@ -22,6 +23,10 @@ public:
 
 private slots:
     void on_pushButton_2_clicked();
+
+    void on_pushButton_4_clicked();
+
+    void on_pushButton_clicked();
 
 private:
     Ui::TakeDialog *ui;

@@ -23,18 +23,12 @@ MainWindow::MainWindow(QWidget *parent) :
     dialog.setSocket(socket);
     dialog.setEMSTransmission(&transmission);
 
-    for(int i=0; i<10; i++){
-        Take t = {0, rand() % 10 + 1+(rand() % 10 / 10.0f)};
-
-        takes.push_back(t);
-    }
-
-    ui->lineEdit->setText(QString::number(takes.at(0).size));
+    ui->takeBallRadius->setText(QString::number(takes.at(0).size));
+    ui->takeHardnessLineEdit->setText(QString::number(takes.at(0).hardness));
+    ui->takeNameLineEdit->setText(takes.at(0).name);
 
     transmission.clearMessage();
     transmission.setMinimalChangeTime(1);
-
-    ui->widget_4->setTake(takes[take]);
 }
 
 MainWindow::~MainWindow()
@@ -80,6 +74,19 @@ void MainWindow::update(){
     ui->statusBar->showMessage(msg);
 
     float ps = fingerRadius / takes[take].size;
+
+
+
+
+
+
+
+
+
+
+
+
+
 //
     int v = 50;//exp((1-ps) * 100 / 10)*20;
     //qDebug() << v; //exp(ps * (-4));
@@ -109,7 +116,9 @@ void MainWindow::on_actionPrevious_take_triggered()
     handFingersVector.clear();
     ui->widget_4->setTake(takes[take]);
 
-    ui->lineEdit->setText(QString::number(takes.at(take-1).size));
+    ui->takeBallRadius->setText(QString::number(takes.at(take-1).size));
+    ui->takeHardnessLineEdit->setText(QString::number(takes.at(take-1).hardness));
+    ui->takeNameLineEdit->setText(takes.at(take-1).name);
 }
 
 /**
@@ -117,7 +126,8 @@ void MainWindow::on_actionPrevious_take_triggered()
  */
 void MainWindow::on_actionNext_take_triggered()
 {
-    if(take >= takes.size())
+
+    if(take >= takes.size()-1)
         return;
 
     timer.stop();
@@ -128,7 +138,9 @@ void MainWindow::on_actionNext_take_triggered()
     saveTake();
     handFingersVector.clear();
 
-    ui->lineEdit->setText(QString::number(takes.at(take-1).size));
+    ui->takeBallRadius->setText(QString::number(takes.at(take).size));
+    ui->takeHardnessLineEdit->setText(QString::number(takes.at(take).hardness));
+    ui->takeNameLineEdit->setText(takes.at(take).name);
 }
 
 /**
@@ -136,7 +148,6 @@ void MainWindow::on_actionNext_take_triggered()
  * will always be "take" current take (number) "_user_" current user (number) ".csv."
  */
 void MainWindow::saveTake(){
-    string Result;
     ostringstream convert;
     convert << take;
 
@@ -163,13 +174,13 @@ void MainWindow::saveTake(){
                 csvfile << handFingersVector[i][j].y() << ";";
                 csvfile << handFingersVector[i][j].z();
 
-                csvfile << ((j==3) ? "\n" : ";");
+                csvfile << ((j==2) ? "\n" : ";");
             }else{
                 csvfile << 0 << ";";
                 csvfile << 0 << ";";
                 csvfile << 0 << ";";
 
-                csvfile << ((j==3) ? "\n" : ";");
+                csvfile << ((j==2) ? "\n" : ";");
             }
         }
     }

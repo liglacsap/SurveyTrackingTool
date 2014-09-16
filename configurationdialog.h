@@ -14,6 +14,10 @@ namespace Ui {
 class ConfigurationDialog;
 }
 
+/**
+ * @brief A dialog to configure the ems intensity for every user.
+ *
+ */
 class ConfigurationDialog : public QDialog
 {
     Q_OBJECT
@@ -22,7 +26,16 @@ public:
     explicit ConfigurationDialog(QWidget *parent = 0);
     ~ConfigurationDialog();
 
+    /**
+     * @brief Sets the Socket for communication
+     * @param socket
+     */
     void setSocket(UDPSocket* socket);
+
+    /**
+     * @brief setEMSTransmission
+     * @param transmission
+     */
     void setEMSTransmission(EMSTransmission* transmission);
 
 private slots:

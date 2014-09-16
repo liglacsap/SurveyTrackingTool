@@ -2,9 +2,9 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QString>
- #include <QTranslator>
+#include <QTranslator>
 #include <QVector3D>
-#include <array>
+
 
 #include "globals.h"
 
@@ -12,6 +12,8 @@ QVector3D handPalmPosition;
 std::vector<QVector3D> handFingers;
 double fingerRadius;
 unsigned int markerCount;
+
+vector<Take> takes;
 
 vector<QVector3D> palmPositions;
 std::vector<std::vector<QVector3D> > handFingersVector;
@@ -65,6 +67,8 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
             float x = data->RigidBodies[i].Markers[j][0];
             float y = data->RigidBodies[i].Markers[j][1];
             float z = data->RigidBodies[i].Markers[j][2];
+
+            qDebug() << j<<"  x:" << x << " y:"<<y<<" z:"<<z;
 
             marker.push_back(QVector3D(x, y, z));
         }
@@ -131,11 +135,10 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
         double d3 = handFingers[2].distanceToPoint(handFingers[0]);
         if(d1 > 30 || d2 > 30 || d3 > 30) return;
 
-       fingerRadius = calculateCircleRadius(handFingers[0], handFingers[1], handFingers[2]); // 5.5 is the radius of a marker
+        fingerRadius = calculateCircleRadius(handFingers[0], handFingers[1], handFingers[2]); // 5.5 is the radius of a marker
         fingerRadius = (fingerRadius > 200) ? 0 : fingerRadius;
         fingerRadius = (fingerRadius < 1.25) ? 1.25 : fingerRadius;
 
-       // qDebug() << d1 << " "<< d2 << " " << d3;
         handFingersVector.push_back(handFingers);
     }
 
@@ -179,6 +182,17 @@ int createClient(int iConnectionType)
 }
 #endif
 
+void loadTakes(){
+    QVector< QVector<QString> > values = CSVFileHandler::loadFile("../balls.csv");
+    takes.clear();
+    for(int row=0; row<values.length(); row++){
+        Take take;
+        take.size = values.at(row).at(0).toDouble();
+        take.hardness = values.at(row).at(1).toDouble();
+        take.name = values.at(row).at(2);
+        takes.push_back(take);
+    }
+}
 
 int main(int argc, char *argv[])
 {
@@ -220,6 +234,8 @@ int main(int argc, char *argv[])
         msg.exec();
     }
     */
+
+    loadTakes();
 
     MainWindow w;
     w.show();

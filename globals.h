@@ -3,8 +3,19 @@
 
 #include <vector>
 #include <array>
+#include <string>
 #include <QVector3D>
 #include <QProcess>
+#include <QString>
+
+using namespace std;
+
+struct Take{
+    float hardness;
+    float size;
+    QString name;
+};
+
 
 
 extern QVector3D handPalmPosition;
@@ -15,11 +26,15 @@ extern unsigned int markerCount;
 extern std::vector<QVector3D> palmPositions;
 extern std::vector<std::vector<QVector3D> > handFingersVector;
 
+extern vector<Take> takes;
 
 
 
-
-
+/**
+ * @brief Checks wether an IP adress is pingable or note
+ * @param The IPv4 or IPv6 adress as a QString
+ * @return If the IP adress is reachable (true/false)
+ */
 inline bool ping(QString ip)
 {
     QString param;
