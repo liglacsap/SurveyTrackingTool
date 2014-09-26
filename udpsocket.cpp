@@ -4,7 +4,7 @@ UDPSocket::UDPSocket(QObject *parent) :
     QObject(parent)
 {
     bool res2 = ping("192.168.3.10");
-    qDebug() << "Ping EMS Arduino " << ((res2) ? "success" : "error");
+    qDebug() << res2;
 
     socket = new QUdpSocket(this);
     sendSocket = new QUdpSocket(this);
@@ -17,10 +17,8 @@ UDPSocket::UDPSocket(QObject *parent) :
     connect(socket, SIGNAL(readyRead()), this, SLOT(read()));
 }
 
-void UDPSocket::write(string message)
-{
-    qDebug() << sendSocket->write(message.c_str());
-    // std::time(0);
+void UDPSocket::write(string message){
+    sendSocket->write(message.c_str());
 }
 
 
@@ -32,6 +30,5 @@ void UDPSocket::read(){
         quint16 senderPort;
 
         socket->readDatagram(datagram.data(), datagram.size(), &sender, &senderPort);
-        //qDebug() << datagram.data();
     }
 }

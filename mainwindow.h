@@ -75,11 +75,15 @@ private slots:
 
     void on_actionTake_Properties_triggered();
 
+    void on_horizontalSlider_valueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
 
     QTimer timer;
     QTime time;
+
+    QTimer *ctimer;
 
     // for the communication with the Arduino Board / EMS System
     UDPSocket *socket;

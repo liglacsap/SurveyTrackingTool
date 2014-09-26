@@ -47,7 +47,6 @@ private slots:
     void on_minCalibration_valueChanged(int arg1);
     void on_minCalibrationSlider_sliderReleased();
     void on_onTimeSlider_sliderReleased();
-    void on_offTimeSlider_sliderReleased();
     void on_minimalChangeTimeSlider_sliderReleased();
     void on_maxCalibrationSlider_sliderReleased();
     void on_onButton_clicked();
@@ -57,6 +56,9 @@ private slots:
     void increaseCalibration();
     void on_pushButton_2_clicked();
     void on_pushButton_3_clicked();
+
+    void on_offTimeBox_valueChanged(int arg1);
+
 private:
     Ui::ConfigurationDialog *ui;
 

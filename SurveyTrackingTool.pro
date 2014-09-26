@@ -13,7 +13,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    glwidget.cpp \
     configurationdialog.cpp \
     paint2dwidget.cpp \
     emstransmission.cpp \
@@ -21,7 +20,6 @@ SOURCES += main.cpp\
     takedialog.cpp
 
 HEADERS  += mainwindow.h \
-    glwidget.h \
     globals.h \
     configurationdialog.h \
     paint2dwidget.h \

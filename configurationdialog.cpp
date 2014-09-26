@@ -49,7 +49,7 @@ void ConfigurationDialog::setEMSTransmission(EMSTransmission* transmission)
  */
 void ConfigurationDialog::update(){
     if(this->isVisible()){
-
+        socket->write(transmission->getMessage());
 
     }
 }
@@ -71,7 +71,6 @@ void ConfigurationDialog::on_onTimeBox_valueChanged(int arg1)
     pads[0].state = ON;
     transmission->clearMessage();
     transmission->setIntensity(ui->onTimeBox->value());
-    qDebug() << QString::fromStdString(transmission->getMessage());
     socket->write(transmission->getMessage());
     //ui->lineEdit->setText(QString::fromStdString(transmission.getMessage()));
 
@@ -83,7 +82,7 @@ void ConfigurationDialog::on_minimalChangeTimeBox_valueChanged(int arg1)
     pads[0].minChangeTime = arg1;
     transmission->clearMessage();
     transmission->setMinimalChangeTime(arg1);
-
+    socket->write(transmission->getMessage());
     //valueChanged = true;
 }
 
@@ -91,8 +90,9 @@ void ConfigurationDialog::on_minimalChangeTimeBox_valueChanged(int arg1)
 
 void ConfigurationDialog::on_minCalibration_editingFinished()
 {
-    //transmission.clearMessage();
+    transmission->clearMessage();
     transmission->setMinimumCalibration(currentChannel, ui->minCalibration->value());
+    socket->write(transmission->getMessage());
     //ui->lineEdit->setText(QString::fromStdString(transmission.getMessage()));
 }
 
@@ -102,29 +102,26 @@ void ConfigurationDialog::on_minCalibration_valueChanged(int arg1)
 
 void ConfigurationDialog::on_minCalibrationSlider_sliderReleased()
 {
-    //transmission.clearMessage();
+    transmission->clearMessage();
     transmission->setMinimumCalibration(currentChannel, ui->minCalibration->value());
+    socket->write(transmission->getMessage());
     //ui->lineEdit->setText(QString::fromStdString(transmission.getMessage()));
 }
 
 void ConfigurationDialog::on_maxCalibrationSlider_sliderReleased()
 {
-    //transmission.clearMessage();
+    transmission->clearMessage();
     transmission->setMaximumCalibration(currentChannel, ui->maxCalibration->value());
+    socket->write(transmission->getMessage());
     //ui->lineEdit->setText(QString::fromStdString(transmission.getMessage()));
 }
 
 
 void ConfigurationDialog::on_onTimeSlider_sliderReleased()
 {
-    //transmission.clearMessage();
-    //transmission.setOnTime(ui->onTimeBox->value());
-    //ui->lineEdit->setText(QString::fromStdString(transmission.getMessage()));
-}
-
-void ConfigurationDialog::on_offTimeSlider_sliderReleased()
-{
-    transmission->setOffTime(ui->offTimeBox->value());
+    transmission->clearMessage();
+    transmission->setOnTime(ui->onTimeBox->value());
+    socket->write(transmission->getMessage());
     //ui->lineEdit->setText(QString::fromStdString(transmission.getMessage()));
 }
 
@@ -147,6 +144,7 @@ void ConfigurationDialog::on_onButton_clicked()
 
     transmission->clearMessage();
     transmission->setOn(currentChannel);
+    socket->write(transmission->getMessage());
     //ui->lineEdit->setText(QString::fromStdString(transmission.getMessage()));
 
     valueChanged = true;
@@ -165,6 +163,7 @@ void ConfigurationDialog::on_offButton_clicked()
 
     transmission->clearMessage();
     transmission->setOff(currentChannel);
+    socket->write(transmission->getMessage());
     //ui->lineEdit->setText(QString::fromStdString(transmission.getMessage()));
 
     valueChanged = true;
@@ -178,6 +177,10 @@ void ConfigurationDialog::on_pad1Button_clicked()
         ui->stateWidget->setStyleSheet("background-color:#27ae60");
     else
         ui->stateWidget->setStyleSheet("background:#c0392b");
+
+    transmission->clearMessage();
+    transmission->setChannel(0);
+    socket->write(transmission->getMessage());
 }
 
 void ConfigurationDialog::on_pad2Button_clicked()
@@ -188,6 +191,10 @@ void ConfigurationDialog::on_pad2Button_clicked()
         ui->stateWidget->setStyleSheet("background-color:#27ae60");
     else
         ui->stateWidget->setStyleSheet("background:#c0392b");
+
+    transmission->clearMessage();
+    transmission->setChannel(1);
+    socket->write(transmission->getMessage());
 }
 
 void ConfigurationDialog::increaseCalibration(){
@@ -201,8 +208,9 @@ void ConfigurationDialog::increaseCalibration(){
 
     transmission->clearMessage();
     transmission->setIntensity(ui->maxCalibration->value());
+    socket->write(transmission->getMessage());
     //ui->lineEdit->setText(QString::fromStdString(transmission.getMessage()));
-    //socket->write(transmission->getMessage());
+
 }
 
 void ConfigurationDialog::on_pushButton_2_clicked()
@@ -215,3 +223,10 @@ void ConfigurationDialog::on_pushButton_3_clicked()
     calibrationTimer->stop();
 }
 
+
+void ConfigurationDialog::on_offTimeBox_valueChanged(int arg1)
+{
+    transmission->clearMessage();
+    transmission->setOffTime(ui->offTimeBox->value());
+    socket->write(transmission->getMessage());
+}

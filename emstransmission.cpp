@@ -53,7 +53,7 @@ void EMSTransmission::setSync(uint channel)
 
 void EMSTransmission::setOn(uint channel)
 {
-    message.append("_O");
+    message.append("_OO");
 
     stringstream ss;
     ss << channel;
@@ -63,7 +63,7 @@ void EMSTransmission::setOn(uint channel)
 
 void EMSTransmission::setOff(uint channel)
 {
-    message.append("_O");
+    message.append("_OO");
 
     stringstream ss;
     ss << channel;

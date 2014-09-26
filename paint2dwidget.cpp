@@ -23,11 +23,10 @@ void Paint2DWidget::paintEvent(QPaintEvent *)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-//	pw = gw / 100 * ps;
-  //  ps = pw * 100 / gw;
 
-    float ps = fingerRadius / 3;
+    float ps = (fingerRadius * 10) / take.size;
     ps = (ps > 2) ? 2 : ps;
+
 
     painter.setPen(Qt::darkGray);
     painter.setBrush(QBrush(QColor("#ecf0f1")));
