@@ -1,3 +1,4 @@
+
 #include "mainwindow.h"
 #include <QApplication>
 #include <QMessageBox>
@@ -8,12 +9,37 @@
 
 #include "globals.h"
 
+#define RIGHT_HAND_STRING "RightHand"
+#define LEFT_HAND_STRING "LeftHand"
+
 QVector3D handPalmPosition;
 std::vector<QVector3D> handFingers;
 double fingerRadius;
 unsigned int markerCount;
 
+struct NamedRigidBody{
+    string name;
+    int id;
+};
+
+QList<NamedRigidBody> namedRigidBodies = QList<NamedRigidBody>();
+
+QString getNameOfRigidBody(int id){
+    QListIterator<NamedRigidBody> i(namedRigidBodies);
+
+
+    while (i.hasNext()){
+        NamedRigidBody a = i.next();
+        if(a.id == id)
+                return  QString::fromStdString(a.name);
+    }
+
+    return "undefined";
+}
+
 vector<Take> takes;
+
+QVector3D thumb;
 
 vector<QVector3D> palmPositions;
 std::vector<std::vector<QVector3D> > handFingersVector;
@@ -22,72 +48,54 @@ std::vector<std::vector<QVector3D> > handFingersVector;
     NatNetClient* client;
 #endif
 
-double calculateCircleRadius(QVector3D p1, QVector3D p2, QVector3D p3){
-    QVector3D t = p2 - p1;
-    QVector3D u = p3 - p1;
-    QVector3D v = p3 - p2;
 
-    //QVector3D w = QVector3D::crossProduct(t, u);
 
-    // Formel von Wikipedia
-    double radius = (t.length() * v.length() * u.length()) /
-        (2 * (QVector3D::crossProduct(t, v)).length());
 
-    return radius;
+bool vectorXGreaterThan(const QVector3D &v1, const QVector3D &v2){
+    return v1.x() > v2.x();
 }
-QVector3D calculateCircleCenter(QVector3D p1, QVector3D p2, QVector3D p3){
-    QVector3D t = p2 - p1;
-    QVector3D u = p3 - p1;
-    QVector3D v = p3 - p2;
-
-    // Helfer
-    double nenner = 2.0 * (QVector3D::crossProduct((p1 - p2), (p2 - p3))).lengthSquared();
-
-
-    double a = v.lengthSquared() * QVector3D::dotProduct((p1 - p2), (p1 - p3)) / nenner;
-    double b = u.lengthSquared() * QVector3D::dotProduct((p2 - p1), (p2 - p3)) / nenner;
-    double g = t.lengthSquared() * QVector3D::dotProduct((p3 - p1), (p3 - p2)) / nenner;
-
-    return a * p1 + b * p2 + g * p3;
+bool vectorXLessThan(const QVector3D &v1, const QVector3D &v2){
+    return v1.x() < v2.x();
 }
 
+bool distanceToThumb(const QVector3D &v1, const QVector3D &v2){
+    return thumb.distanceToPoint(v1) < thumb.distanceToPoint(v2);
+}
+
+// The Optitrack system is only available on Windows. In order to use this software with linux the values must be send via
+// network connection.
 #ifdef _WIN32
 void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
 {
     NatNetClient* pClient = (NatNetClient*)pUserData;
+
+    // disable all debug information provided by the OptiTrack system
     pClient->SetVerbosityLevel(0);
 
 
-
     for (int i = 0; i < data->nRigidBodies; i++){
-        //bool bTrackingValid = data->RigidBodies[i].params & 0x01;
-
         std::vector<QVector3D> marker;
         for (int j = 0; j < data->RigidBodies[i].nMarkers; j++){
             float x = data->RigidBodies[i].Markers[j][0];
             float y = data->RigidBodies[i].Markers[j][1];
             float z = data->RigidBodies[i].Markers[j][2];
 
-            qDebug() << j<<"  x:" << x << " y:"<<y<<" z:"<<z;
-
             marker.push_back(QVector3D(x, y, z));
         }
 
-
-
         if (marker.size() > 2)
             handPalmPosition = calculateCircleCenter(marker[0], marker[1], marker[2]) * 100;
+
     }
 
     if(isnan(handPalmPosition.x()))
         handPalmPosition = QVector3D(0, 0, 0);
 
 
-
     palmPositions.push_back(handPalmPosition);
 
-
     handFingers.clear();
+
     markerCount =  data->nOtherMarkers;
 
     for (int i = 0; i < data->nOtherMarkers; i++){
@@ -97,7 +105,7 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
 
 
         // Return if hand palm rigid body was not detected
-       // if (data->nRigidBodies == 0) return;
+        if (data->nRigidBodies == 0) return;
 
         // Filter all points and only return the points which are not related to any rigid body
         bool a = true;
@@ -111,29 +119,31 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
             double diffY = abs(y - _y);
             double diffZ = abs(z - _z);
 
-            //qDebug() << diffX << " " << diffY << diffZ;
             if (diffX < 0.001 && diffY < 0.001 && diffZ < 0.001)
                 a = false;
         }
 
-        //if (a){
+        if (a){
             QVector3D vec = QVector3D(x, y, z);
             double distance = vec.distanceToPoint(handPalmPosition);
 
-           // if(distance > 1.7 && distance < 8.0){
+            if(distance > 10.0 && distance < 20.0){
                 handFingers.push_back(QVector3D(x, y, z));
-            //}
-
-
-
-        //}
+            }
+        }
     }
 
-    if(handFingers.size() >= 3)   {
-        double d1 = handFingers[0].distanceToPoint(handFingers[1]);
-        double d2 = handFingers[1].distanceToPoint(handFingers[2]);
-        double d3 = handFingers[2].distanceToPoint(handFingers[0]);
-        if(d1 > 30 || d2 > 30 || d3 > 30) return;
+
+
+    if(handFingers.size() == 5){
+        if(getNameOfRigidBody(data->RigidBodies[0].ID)==RIGHT_HAND_STRING)
+            qSort(handFingers.begin(), handFingers.end(), vectorXLessThan);
+        else
+            qSort(handFingers.begin(), handFingers.end(), vectorXGreaterThan);
+
+        thumb = handFingers[0];
+
+        qSort(handFingers.begin(), handFingers.end(), distanceToThumb);
 
         fingerRadius = calculateCircleRadius(handFingers[0], handFingers[1], handFingers[2]); // 5.5 is the radius of a marker
         fingerRadius = (fingerRadius > 200) ? 0 : fingerRadius;
@@ -141,9 +151,13 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
 
         handFingersVector.push_back(handFingers);
     }
-
 }
 
+/**
+ * @brief Creates the client for the OptiTrack system.
+ * @param iConnectionType
+ * @return
+ */
 int createClient(int iConnectionType)
 {
     // release previous server
@@ -178,10 +192,31 @@ int createClient(int iConnectionType)
         }
     }
 
+
+    sDataDescriptions* pDataDefs = NULL;
+    client->GetDataDescriptions(&pDataDefs);
+
+    for (int i=0;i<pDataDefs->nDataDescriptions;i++)
+    {
+      if (pDataDefs->arrDataDescriptions[i].type != Descriptor_RigidBody)
+        continue;
+
+        sRigidBodyDescription *pRB = pDataDefs->arrDataDescriptions[i].Data.RigidBodyDescription;
+        std::string rigidBodyName = pRB->szName;
+
+        NamedRigidBody namedRigidBody;
+        namedRigidBody.id = pRB->ID;
+        namedRigidBody.name = pRB->szName;
+
+        namedRigidBodies.push_back(namedRigidBody);
+    }
     return ErrorCode_OK;
 }
 #endif
 
+/**
+ * @brief Loads all takes saved in the file ../balls.csv.
+ */
 void loadTakes(){
     QVector< QVector<QString> > values = CSVFileHandler::loadFile("../balls.csv");
     takes.clear();
