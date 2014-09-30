@@ -27,10 +27,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     transmission.clearMessage();
     transmission.setMinimalChangeTime(1);
-
-
-   // QObject::connect(capturedHandListener, SIGNAL(dataAdded(int)),
-   //                       this, SLOT(dataAdded(int)));
 }
 
 MainWindow::~MainWindow()
@@ -46,6 +42,7 @@ void MainWindow::setCapturedHand(CapturedHand *hand)
 void MainWindow::setTakes(QList<Take> *takes)
 {
     this->takes = takes;
+    shuffleTakes();
 
     ui->takeBallRadius->setText(QString::number(takes->at(0).size));
     ui->takeHardnessLineEdit->setText(QString::number(takes->at(0).hardness));
@@ -63,6 +60,13 @@ void MainWindow::setCapturedHandDataListener(CapturedHandDataListener *listener)
 {
     this->listener = listener;
 }
+
+Take MainWindow::getCurrentTake()
+{
+    return takes->at(take);
+}
+
+
 
 /**
  * @brief Close the tracking tool
@@ -163,6 +167,12 @@ void MainWindow::on_actionPrevious_take_triggered()
     ui->takeBallRadius->setText(QString::number(takes->at(take).size));
     ui->takeHardnessLineEdit->setText(QString::number(takes->at(take).hardness));
     ui->takeNameLineEdit->setText(takes->at(take).name);
+
+    if(take == 0){
+        this->findChildren<QAction*>("actionPrevious_take")[0]->setEnabled(false);
+    }
+
+    this->findChildren<QAction*>("actionNext_take")[0]->setEnabled(true);
 }
 
 /**
@@ -170,16 +180,23 @@ void MainWindow::on_actionPrevious_take_triggered()
  */
 void MainWindow::on_actionNext_take_triggered()
 {
+    this->findChildren<QAction*>("actionPrevious_take")[0]->setEnabled(true);
 
-    if(take >= takes->size()-1)
+    if(take >= (uint)takes->size()-1){
+        this->findChildren<QAction*>("actionNext_take")[0]->setEnabled(false);
+
         return;
+    }
+
 
     timer.stop();
+    saveTake();
+
 
     take++;
     ui->paintWidget->setTake(takes->at(take));
 
-    saveTake();
+
 
     // delete all captured finger positions
     capturedTakeHandData->hands.clear();
@@ -234,11 +251,11 @@ void MainWindow::saveTake(){
 
 
     // save all captured finger positions
-    for(unsigned int i=0; i<capturedTakeHandData->hands.size(); i++){
+    for(int i=0; i<capturedTakeHandData->hands.size(); i++){
         row.clear();
 
         CapturedHand hand = capturedTakeHandData->hands[i];
-        for(unsigned int j=0; j<5; j++){
+        for(int j=0; j<5; j++){
             if(hand.fingers.size() >= j){
                 row.push_back(QString::number(hand.fingers[j].x()));
                 row.push_back(QString::number(hand.fingers[j].y()));
@@ -274,9 +291,28 @@ void MainWindow::saveTake(){
         values.push_back(row);
     }
 
-    qDebug() << fileName;
+    QString msg = "File ";
+    msg.append(fileName);
+    msg.append(" saved");
+    this->ui->statusBar->showMessage(msg);
+
     CSVFileHandler::saveFile(fileName, values);
 
+}
+
+void MainWindow::shuffleTakes()
+{
+
+    QList<Take> dummy = *takes;
+
+
+    while((dummy == *takes)){
+        int r = rand() % 15 + 1;
+
+        for(int j=0; j<r; j++)
+            std::random_shuffle ( takes->begin(), takes->end());
+
+    }
 }
 
 /**
@@ -296,6 +332,9 @@ void MainWindow::on_actionNew_triggered()
 
     user++;
     capturedTakeHandData->hands.clear();
+
+    shuffleTakes();
+
 
     ui->takeBallRadius->setText(QString::number(takes->at(take).size));
     ui->takeHardnessLineEdit->setText(QString::number(takes->at(take).hardness));

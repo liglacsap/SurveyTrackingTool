@@ -50,11 +50,11 @@ void CapturedHandDataListener::save()
     qDebug() << capturedData.size();
 
     // save all captured finger positions
-    for(unsigned int i=0; i<capturedData.size(); i++){
+    for(int i=0; i<capturedData.size(); i++){
         row.clear();
 
         CapturedHand hand = capturedData[i];
-        for(unsigned int j=0; j<5; j++){
+        for(int j=0; j<5; j++){
             if(hand.fingers.size() >= j){
                 row.push_back(QString::number(hand.fingers[j].x()));
                 row.push_back(QString::number(hand.fingers[j].y()));

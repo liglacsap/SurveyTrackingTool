@@ -289,6 +289,9 @@
    </property>
   </action>
   <action name="actionPrevious_take">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/circleleft32.png</normaloff>
@@ -296,6 +299,9 @@
    </property>
    <property name="text">
     <string>previous take</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionNext_take">

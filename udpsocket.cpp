@@ -10,7 +10,7 @@ UDPSocket::UDPSocket(QObject *parent) :
     sendSocket = new QUdpSocket(this);
     sendSocket->connectToHost("192.168.3.10", 1);
 
-    bool res = socket->bind(454545, QUdpSocket::ShareAddress);
+    socket->bind((quint16)454545, QUdpSocket::ShareAddress);
 
 
 

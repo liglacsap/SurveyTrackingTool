@@ -40,10 +40,6 @@ TakeDialog::~TakeDialog()
 void TakeDialog::on_pushButton_2_clicked()
 {
     this->ui->tableWidget->setRowCount(this->ui->tableWidget->rowCount()+1);
-    QString text = "Take ";
-    //ui->listWidget->addItem(text);
-
-    //this->ui->textLineEdit->setText(text);
 }
 
 void TakeDialog::on_pushButton_4_clicked()

@@ -12,7 +12,6 @@
 #define RIGHT_HAND_STRING "RightHand"
 #define LEFT_HAND_STRING "LeftHand"
 
-
 CapturedHand capturedHand;
 CapturedTakeHandData capturedTakeHandData;
 CapturedHandDataListener* listener;
@@ -220,6 +219,22 @@ QList<QVector3D> getAllMarker(sFrameOfMocapData* data, QVector3D handPalmPositio
 #ifdef _WIN32
 
 
+
+int calculateIntensity(){
+    float ps = capturedHand.fingerRadius / w->getCurrentTake().size * 10.0f;
+
+
+    int f1 =  exp(120.0f*(1-ps));
+
+    int v = f1;
+    v = (v > 127) ? 127 : v;
+
+   if(v==INT_MIN)
+    v = 127;
+
+    return v;
+}
+
 /**
  * @brief DataHandler of the OptiTrack. Retrieves all data and calculates the hand palm position and all hand specific stuff
  * @param data The Data provided by the OptiTrack
@@ -249,7 +264,6 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
 
 
     if(capturedHand.fingers.size() >= 3){
-
         for(int i=0; i<data->nRigidBodies; i++){
             if(getNameOfRigidBody(data->RigidBodies[i].ID)==RIGHT_HAND_STRING){
                 capturedHand.type = RIGHT_HAND_STRING;
@@ -277,9 +291,10 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
 
 
         capturedTakeHandData.hands.push_back(capturedHand);
-        /*
-        listener->appendData(capturedHand);
-        */
+
+
+        capturedHand.emsIntensity = 666; //calculateIntensity();
+
     }
 
 
@@ -361,7 +376,22 @@ QList<Take> loadTakesFromFile(QString filename){
 
 int main(int argc, char *argv[])
 {
+    time_t t;
+
+     time(&t);
+     srand((unsigned int)t);
+
+
     QApplication a(argc, argv);
+
+    QList<Take> takes = loadTakesFromFile("../balls.csv");
+
+
+    w = new MainWindow();
+    w->setCapturedHand(&capturedHand);
+    w->setCapturedTakeHandData(&capturedTakeHandData);
+    w->setTakes(&takes);
+    w->show();
 
 #ifdef _WIN32
     int result = createClient();
@@ -391,26 +421,9 @@ int main(int argc, char *argv[])
         int res = msg.exec();
 
         // if the user cancels
-        if(res==4194304) return -1;
+        if(res==QMessageBox::Cancel) return -1;
     }
 #endif
-
-    QList<Take> takes = loadTakesFromFile("../balls.csv");
-
-
-
-    w = new MainWindow();
-    w->setCapturedHand(&capturedHand);
-    w->setCapturedTakeHandData(&capturedTakeHandData);
-    w->setTakes(&takes);
-    w->show();
-
-    listener = new CapturedHandDataListener(w);
-
-    QObject::connect(listener, SIGNAL(dataAdded(CapturedHand)),
-                     w, SLOT(dataAdded(CapturedHand)));
-
-
 
     return a.exec();
 }

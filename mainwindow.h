@@ -27,12 +27,14 @@
 #include <string>
 #include <time.h>
 #include <sstream>
-
+#include <random>
+#include <chrono>
 
 #include "udpsocket.h"
 
 using namespace std;
 
+inline int myrandom (int i) { return std::rand()%i;}
 
 namespace Ui {
 class MainWindow;
@@ -61,6 +63,8 @@ public:
     void setTakes(QList<Take>* takes);
     void setCapturedTakeHandData(CapturedTakeHandData* data);
     void setCapturedHandDataListener(CapturedHandDataListener* listener);
+
+    Take getCurrentTake();
 private slots:
     void on_actionExit_triggered();
 
@@ -107,6 +111,8 @@ private:
      * @brief Saves the current take in an CSV file.
      */
     void saveTake();
+
+    void shuffleTakes();
 
 
     EMSTransmission transmission;

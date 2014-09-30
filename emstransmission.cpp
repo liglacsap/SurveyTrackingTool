@@ -46,6 +46,8 @@ void EMSTransmission::setSSID(string ssid)
 
 void EMSTransmission::setSync(uint channel)
 {
+    channel = 0;
+
     // Not implemented yet
     //message.append("_SY");
     //message.append(ip);
