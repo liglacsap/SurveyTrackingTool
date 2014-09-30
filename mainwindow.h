@@ -28,13 +28,11 @@
 #include <time.h>
 #include <sstream>
 
+
 #include "udpsocket.h"
 
 using namespace std;
 
-extern double fingerRadius;
-
-extern vector<Take> takes;
 
 namespace Ui {
 class MainWindow;
@@ -49,10 +47,20 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+private:
+    CapturedHand* capturedHand;
+    CapturedTakeHandData* capturedTakeHandData;
+    QList<Take>* takes;
+
+    CapturedHandDataListener* listener;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void setCapturedHand(CapturedHand* hand);
+    void setTakes(QList<Take>* takes);
+    void setCapturedTakeHandData(CapturedTakeHandData* data);
+    void setCapturedHandDataListener(CapturedHandDataListener* listener);
 private slots:
     void on_actionExit_triggered();
 
@@ -76,7 +84,8 @@ private slots:
     void on_actionTake_Properties_triggered();
 
     void on_horizontalSlider_valueChanged(int value);
-
+public slots:
+    void dataAdded(CapturedHand* hand);
 private:
     Ui::MainWindow *ui;
 

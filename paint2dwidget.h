@@ -8,7 +8,7 @@
 #include "globals.h"
 #include "takedialog.h"
 
-extern double fingerRadius;
+extern CapturedHand capturedHand;
 
 class Paint2DWidget : public QWidget
 {

@@ -6,9 +6,6 @@
 #include "globals.h"
 #include "csvfilehandler.h"
 
-extern vector<Take> takes;
-
-
 namespace Ui {
 class TakeDialog;
 }
@@ -30,6 +27,8 @@ private slots:
 
 private:
     Ui::TakeDialog *ui;
+
+    vector<Take> takes;
 };
 
 #endif // TAKEDIALOG_H

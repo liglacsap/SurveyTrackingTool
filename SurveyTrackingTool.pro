@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui opengl network
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     paint2dwidget.cpp \
     emstransmission.cpp \
     udpsocket.cpp \
-    takedialog.cpp
+    takedialog.cpp \
+    capturedhanddata.cpp
 
 HEADERS  += mainwindow.h \
     globals.h \
@@ -26,7 +27,8 @@ HEADERS  += mainwindow.h \
     emstransmission.h \
     udpsocket.h \
     takedialog.h \
-    csvfilehandler.h
+    csvfilehandler.h \
+    capturedhanddata.h
 
 FORMS    += mainwindow.ui \
     configurationdialog.ui \
@@ -35,7 +37,7 @@ FORMS    += mainwindow.ui \
 INCLUDEPATH += "C:\Users\lab\Desktop\Gil Engel Bachelor Thesis\NatNet_SDK_2.6\include"
 
 win32:LIBS += -L"C:\Users\lab\Desktop\Gil Engel Bachelor Thesis\NatNet_SDK_2.6\lib\x64" -lNatNetLib
-unix:LIBS += -lGLU
+
 
 RESOURCES += \
     icons.qrc

@@ -22,19 +22,46 @@ MainWindow::MainWindow(QWidget *parent) :
     dialog.setSocket(socket);
     dialog.setEMSTransmission(&transmission);
 
-    ui->takeBallRadius->setText(QString::number(takes.at(0).size));
-    ui->takeHardnessLineEdit->setText(QString::number(takes.at(0).hardness));
-    ui->takeNameLineEdit->setText(takes.at(0).name);
 
-    ui->paintWidget->setTake(takes[take]);
+
 
     transmission.clearMessage();
     transmission.setMinimalChangeTime(1);
+
+
+   // QObject::connect(capturedHandListener, SIGNAL(dataAdded(int)),
+   //                       this, SLOT(dataAdded(int)));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::setCapturedHand(CapturedHand *hand)
+{
+    this->capturedHand = hand;
+}
+
+void MainWindow::setTakes(QList<Take> *takes)
+{
+    this->takes = takes;
+
+    ui->takeBallRadius->setText(QString::number(takes->at(0).size));
+    ui->takeHardnessLineEdit->setText(QString::number(takes->at(0).hardness));
+    ui->takeNameLineEdit->setText(takes->at(0).name);
+
+    ui->paintWidget->setTake(takes->at(take));
+}
+
+void MainWindow::setCapturedTakeHandData(CapturedTakeHandData* data)
+{
+    capturedTakeHandData = data;
+}
+
+void MainWindow::setCapturedHandDataListener(CapturedHandDataListener *listener)
+{
+    this->listener = listener;
 }
 
 /**
@@ -64,7 +91,7 @@ void MainWindow::on_actionStart_take_triggered()
     this->findChildren<QAction*>("actionStart_take")[0]->setEnabled(false);
     this->findChildren<QAction*>("actionFinish_take")[0]->setEnabled(true);
 
-    handFingersVector.clear();
+    //handFingersVector.clear();
     time.start();
     timer.start();
 }
@@ -80,12 +107,12 @@ void MainWindow::update(){
 
     ui->statusBar->showMessage(msg);
 
-    float ps = fingerRadius / takes[take].size * 10.0f;
+    float ps = capturedHand->fingerRadius / takes->at(take).size * 10.0f;
 
 
 
 
-    ui->userFingerRadiusLineEdit->setText(QString::number(fingerRadius));
+    ui->userFingerRadiusLineEdit->setText(QString::number(capturedHand->fingerRadius));
 
 
 
@@ -98,11 +125,8 @@ void MainWindow::update(){
     if(v==INT_MIN)
         v = 127;
 
-    //qDebug() << "PS:" << (1-ps) << " F1:" << v;
-
-   // qDebug() << v; //exp(ps * (-4));
     ui->label_6->setText(QString::number(v));
-    //v = (v > 127) ? 127 : v;
+
     transmission.clearMessage();
     transmission.setIntensity(v);
     socket->write(transmission.getMessage());
@@ -131,15 +155,14 @@ void MainWindow::on_actionPrevious_take_triggered()
     if(take > 0)
         take--;
 
-    ui->paintWidget->setTake(takes[take]);
+    ui->paintWidget->setTake(takes->at(take));
 
     saveTake();
-    handFingersVector.clear();
-    ui->paintWidget->setTake(takes[take]);
+    ui->paintWidget->setTake(takes->at(take));
 
-    ui->takeBallRadius->setText(QString::number(takes.at(take).size));
-    ui->takeHardnessLineEdit->setText(QString::number(takes.at(take).hardness));
-    ui->takeNameLineEdit->setText(takes.at(take).name);
+    ui->takeBallRadius->setText(QString::number(takes->at(take).size));
+    ui->takeHardnessLineEdit->setText(QString::number(takes->at(take).hardness));
+    ui->takeNameLineEdit->setText(takes->at(take).name);
 }
 
 /**
@@ -148,28 +171,23 @@ void MainWindow::on_actionPrevious_take_triggered()
 void MainWindow::on_actionNext_take_triggered()
 {
 
-    if(take >= takes.size()-1)
+    if(take >= takes->size()-1)
         return;
 
-   // timer.stop();
+    timer.stop();
 
     take++;
-    ui->paintWidget->setTake(takes[take]);
+    ui->paintWidget->setTake(takes->at(take));
 
     saveTake();
 
     // delete all captured finger positions
-    handFingersVector.clear();
-
-
+    capturedTakeHandData->hands.clear();
 
     // update the take information for the ui
-    ui->takeBallRadius->setText(QString::number(takes.at(take).size));
-    ui->takeHardnessLineEdit->setText(QString::number(takes.at(take).hardness));
-    ui->takeNameLineEdit->setText(takes.at(take).name);
-
-
-    //ctimer->start(10);
+    ui->takeBallRadius->setText(QString::number(takes->at(take).size));
+    ui->takeHardnessLineEdit->setText(QString::number(takes->at(take).hardness));
+    ui->takeNameLineEdit->setText(takes->at(take).name);
 }
 
 /**
@@ -177,25 +195,30 @@ void MainWindow::on_actionNext_take_triggered()
  * will always be "take" current take (number) "_user_" current user (number) __timestamp__".csv."
  */
 void MainWindow::saveTake(){
+
     QVector< QVector<QString> > values;
 
     // Create Captions for each column.
-    QVector<QString> label;
+    QVector<QString> row;
     char chr[3] = {'X', 'Y', 'Z'};
-    for(int i=0; i<3; i++){
+    for(int i=0; i<5; i++){
         for(int j=0; j<3; j++){
             QString value = chr[j];
             value.push_back("(F");
             value.push_back(QString::number(i));
             value.push_back(")");
 
-            label.push_back(value);
+            row.push_back(value);
         }
     }
-    label.push_back("Radius Hand");
-    label.push_back("Radius Ball");
-    label.push_back("Ball Hardness");
-    values.push_back(label);
+    row.push_back("X(Hand Palm)");
+    row.push_back("Y(Hand Palm)");
+    row.push_back("Z(Hand Palm)");
+    row.push_back("Radius Hand");
+    row.push_back("Radius Ball");
+    row.push_back("Ball Hardness");
+    row.push_back("EMS Intensity");
+    values.push_back(row);
 
     // Concatenate several strings to the final filename
     QDateTime time(QDateTime::currentDateTime());
@@ -211,26 +234,49 @@ void MainWindow::saveTake(){
 
 
     // save all captured finger positions
-    for(unsigned int i=0; i<handFingersVector.size(); i++){
-        label.clear();
-        for(unsigned int j=0; j<3; j++){
-            if(handFingersVector[i].size() > j){
-                label.push_back(QString::number(handFingersVector[i][j].x()));
-                label.push_back(QString::number(handFingersVector[i][j].y()));
-                label.push_back(QString::number(handFingersVector[i][j].z()));
+    for(unsigned int i=0; i<capturedTakeHandData->hands.size(); i++){
+        row.clear();
+
+        CapturedHand hand = capturedTakeHandData->hands[i];
+        for(unsigned int j=0; j<5; j++){
+            if(hand.fingers.size() >= j){
+                row.push_back(QString::number(hand.fingers[j].x()));
+                row.push_back(QString::number(hand.fingers[j].y()));
+                row.push_back(QString::number(hand.fingers[j].z()));
             }
             else    // save placeholder in case that less than three fingers where captured
             {
-                label.push_back(QString::number(0));
-                label.push_back(QString::number(0));
-                label.push_back(QString::number(0));
+                row.push_back(QString::number(0));
+                row.push_back(QString::number(0));
+                row.push_back(QString::number(0));
+                row.push_back(QString::number(0));
+                row.push_back(QString::number(0));
             }
         }
 
-        values.push_back(label);
+        // save hand palm position
+        row.push_back(QString::number(hand.palmPosition.x()));
+        row.push_back(QString::number(hand.palmPosition.y()));
+        row.push_back(QString::number(hand.palmPosition.z()));
+
+        // radius hand
+        row.push_back(QString::number(hand.fingerRadius));
+
+        // radius ball
+        row.push_back(QString::number(takes->at(take).size));
+
+        // hardness ball
+        row.push_back(QString::number(takes->at(take).hardness));
+
+        // hardness ball
+        row.push_back(QString::number(hand.emsIntensity));
+
+        values.push_back(row);
     }
 
+    qDebug() << fileName;
     CSVFileHandler::saveFile(fileName, values);
+
 }
 
 /**
@@ -245,14 +291,16 @@ void MainWindow::on_actionSave_triggered()
  */
 void MainWindow::on_actionNew_triggered()
 {
+
     take = 0;
 
     user++;
-    handFingersVector.clear();
+    capturedTakeHandData->hands.clear();
 
-    ui->takeBallRadius->setText(QString::number(takes.at(take).size));
-    ui->takeHardnessLineEdit->setText(QString::number(takes.at(take).hardness));
-    ui->takeNameLineEdit->setText(takes.at(take).name);
+    ui->takeBallRadius->setText(QString::number(takes->at(take).size));
+    ui->takeHardnessLineEdit->setText(QString::number(takes->at(take).hardness));
+    ui->takeNameLineEdit->setText(takes->at(take).name);
+
 }
 
 /**
@@ -260,7 +308,7 @@ void MainWindow::on_actionNew_triggered()
  */
 void MainWindow::on_actionRestart_take_triggered()
 {
-    handFingersVector.clear();
+    capturedTakeHandData->hands.clear();
     time.start();
 }
 
@@ -272,5 +320,10 @@ void MainWindow::on_actionTake_Properties_triggered()
 
 void MainWindow::on_horizontalSlider_valueChanged(int value)
 {
-    fingerRadius = value / 100.0f;
+    capturedHand->fingerRadius = value / 100.0f;
+}
+
+void MainWindow::dataAdded(CapturedHand* hand)
+{
+    hand->emsIntensity = 666;
 }

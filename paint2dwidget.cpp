@@ -24,7 +24,7 @@ void Paint2DWidget::paintEvent(QPaintEvent *)
     painter.setRenderHint(QPainter::Antialiasing);
 
 
-    float ps = (fingerRadius * 10) / take.size;
+    float ps = (capturedHand.fingerRadius * 10) / take.size;
     ps = (ps > 2) ? 2 : ps;
 
 
