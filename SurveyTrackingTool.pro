@@ -17,8 +17,7 @@ SOURCES += main.cpp\
     paint2dwidget.cpp \
     emstransmission.cpp \
     udpsocket.cpp \
-    takedialog.cpp \
-    capturedhanddata.cpp
+    conditiondialog.cpp
 
 HEADERS  += mainwindow.h \
     globals.h \
@@ -26,13 +25,12 @@ HEADERS  += mainwindow.h \
     paint2dwidget.h \
     emstransmission.h \
     udpsocket.h \
-    takedialog.h \
     csvfilehandler.h \
-    capturedhanddata.h
+    conditiondialog.h
 
 FORMS    += mainwindow.ui \
     configurationdialog.ui \
-    takedialog.ui
+    conditiondialog.ui
 
 INCLUDEPATH += "C:\Users\lab\Desktop\Gil Engel Bachelor Thesis\NatNet_SDK_2.6\include"
 

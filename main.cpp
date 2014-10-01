@@ -13,8 +13,7 @@
 #define LEFT_HAND_STRING "LeftHand"
 
 CapturedHand capturedHand;
-CapturedTakeHandData capturedTakeHandData;
-CapturedHandDataListener* listener;
+CapturedConditionHandData capturedConditionHandData;
 struct NamedRigidBody{
     string name;
     int id;
@@ -24,9 +23,13 @@ MainWindow* w;
 
 QList<NamedRigidBody> namedRigidBodies = QList<NamedRigidBody>();
 
+/**
+ * @brief Finds the corresponding name of a RigidBody
+ * @param the id of the RigidBody
+ * @return The name of the RigidBody
+ */
 QString getNameOfRigidBody(int id){
     QListIterator<NamedRigidBody> i(namedRigidBodies);
-
 
     while (i.hasNext()){
         NamedRigidBody a = i.next();
@@ -219,9 +222,12 @@ QList<QVector3D> getAllMarker(sFrameOfMocapData* data, QVector3D handPalmPositio
 #ifdef _WIN32
 
 
-
+/**
+ * @brief Calculates the intensity for the ems signal
+ * @return the intensity as Interger value ranged by 0 up to 127
+ */
 int calculateIntensity(){
-    float ps = capturedHand.fingerRadius / w->getCurrentTake().size * 10.0f;
+    float ps = capturedHand.fingerRadius / w->getCurrentCondition().size * 10.0f;
 
 
     int f1 =  exp(120.0f*(1-ps));
@@ -253,7 +259,7 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
     capturedHand.palmPosition = calculateHandPalmPosition(data);
 
 
-    // handFingers is a vector to save all captured finger positions within a take
+    // handFingers is a vector to save all captured finger positions within a Condition
     capturedHand.fingers.clear();
 
     QList<QVector3D> marker = getAllMarker(data, capturedHand.palmPosition);
@@ -263,17 +269,17 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
          capturedHand.fingers.push_back(i.next());
 
 
-    if(capturedHand.fingers.size() >= 3){
+    if(capturedHand.fingers.size() == 5){
         for(int i=0; i<data->nRigidBodies; i++){
             if(getNameOfRigidBody(data->RigidBodies[i].ID)==RIGHT_HAND_STRING){
                 capturedHand.type = RIGHT_HAND_STRING;
 
-                qSort(capturedHand.fingers.begin(), capturedHand.fingers.end(), vectorXLessThan);
+                qSort(capturedHand.fingers.begin(), capturedHand.fingers.end(), vectorXGreaterThan);
                 break;
             }else if(getNameOfRigidBody(data->RigidBodies[i].ID)==LEFT_HAND_STRING){
                 capturedHand.type = LEFT_HAND_STRING;
 
-                qSort(capturedHand.fingers.begin(), capturedHand.fingers.end(), vectorXGreaterThan);
+                qSort(capturedHand.fingers.begin(), capturedHand.fingers.end(), vectorXLessThan);
                 break;
             }
         }
@@ -286,17 +292,9 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
         qSort(capturedHand.fingers.begin(), capturedHand.fingers.end(), distanceToThumbLessThan);
 
         capturedHand.fingerRadius = calculateCircleRadius(capturedHand.fingers[0], capturedHand.fingers[1], capturedHand.fingers[2]); // 5.5 is the radius of a marker
-        capturedHand.fingerRadius = (capturedHand.fingerRadius > 200) ? 0 : capturedHand.fingerRadius;
-        capturedHand.fingerRadius = (capturedHand.fingerRadius < 1.25) ? 1.25 : capturedHand.fingerRadius;
-
-
-        capturedTakeHandData.hands.push_back(capturedHand);
-
-
-        capturedHand.emsIntensity = 666; //calculateIntensity();
-
+        capturedHand.emsIntensity = calculateIntensity();
+        capturedConditionHandData.hands.push_back(capturedHand);
     }
-
 
 }
 
@@ -356,41 +354,37 @@ int createClient()
 #endif
 
 /**
- * @brief Loads all takes saved in the file ../balls.csv.
+ * @brief Loads all Conditions saved in the file ../balls.csv.
  */
-QList<Take> loadTakesFromFile(QString filename){
+QList<Condition> loadConditionsFromFile(QString filename){
     QVector< QVector<QString> > values = CSVFileHandler::loadFile("../balls.csv");
-    QList<Take> takes;
+    QList<Condition> Conditions;
     for(int row=0; row<values.length(); row++){
-        Take take;
-        take.size = values.at(row).at(0).toDouble();
-        take.hardness = values.at(row).at(1).toDouble();
-        take.name = values.at(row).at(2);
-        takes.push_back(take);
+        Condition Condition;
+        Condition.size = values.at(row).at(0).toDouble();
+        Condition.hardness = values.at(row).at(1).toDouble();
+        Condition.name = values.at(row).at(2);
+        Conditions.push_back(Condition);
     }
 
-    return takes;
+    return Conditions;
 }
-
-
 
 int main(int argc, char *argv[])
 {
     time_t t;
 
-     time(&t);
-     srand((unsigned int)t);
-
+    time(&t);
+    srand((unsigned int)t);
 
     QApplication a(argc, argv);
 
-    QList<Take> takes = loadTakesFromFile("../balls.csv");
-
+    QList<Condition> Conditions = loadConditionsFromFile("../balls.csv");
 
     w = new MainWindow();
     w->setCapturedHand(&capturedHand);
-    w->setCapturedTakeHandData(&capturedTakeHandData);
-    w->setTakes(&takes);
+    w->setCapturedConditionHandData(&capturedConditionHandData);
+    w->setConditions(&Conditions);
     w->show();
 
 #ifdef _WIN32

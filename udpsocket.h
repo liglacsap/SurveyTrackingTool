@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QUdpSocket>
 #include <QtNetwork>
+#include <QMessageBox>
 
 #include <string>
 #include <ctime>

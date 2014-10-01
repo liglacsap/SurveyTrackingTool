@@ -23,6 +23,12 @@ class CSVFileHandler
 public:
     CSVFileHandler();
 
+    /**
+     * @brief Saves values to a CSV file
+     * @param fileName
+     * @param values
+     * @return
+     */
     static inline bool saveFile(QString fileName, QVector< QVector<QString> > values){
         QString line;
         for(int i=0; i<values.length(); i++){
@@ -49,6 +55,11 @@ public:
         return true;
     }
 
+    /**
+     * @brief Loads an CSV Fil
+     * @param fileName
+     * @return
+     */
     static inline QVector< QVector<QString> > loadFile(QString fileName){
         QVector< QVector<QString> > result;
 

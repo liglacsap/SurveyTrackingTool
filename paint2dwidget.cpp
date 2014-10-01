@@ -1,14 +1,14 @@
 #include "paint2dwidget.h"
 
 
-Take Paint2DWidget::getTake() const
+Condition Paint2DWidget::getCondition() const
 {
-    return take;
+    return condition;
 }
 
-void Paint2DWidget::setTake(const Take &value)
+void Paint2DWidget::setCondition(const Condition &value)
 {
-    take = value;
+    condition = value;
 }
 Paint2DWidget::Paint2DWidget(QWidget *parent) :
     QWidget(parent)
@@ -23,8 +23,8 @@ void Paint2DWidget::paintEvent(QPaintEvent *)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-
-    float ps = (capturedHand.fingerRadius * 10) / take.size;
+    qDebug() << capturedHand.fingerRadius << "  " << condition.size;
+    float ps = (capturedHand.fingerRadius) / condition.size;
     ps = (ps > 2) ? 2 : ps;
 
 

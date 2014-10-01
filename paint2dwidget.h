@@ -6,7 +6,7 @@
 #include <QDebug>
 
 #include "globals.h"
-#include "takedialog.h"
+#include "conditiondialog.h"
 
 extern CapturedHand capturedHand;
 
@@ -15,13 +15,13 @@ class Paint2DWidget : public QWidget
     Q_OBJECT
 
 private:
-    Take take;
+    Condition condition;
 public:
     explicit Paint2DWidget(QWidget *parent = 0);
 
 
-    Take getTake() const;
-    void setTake(const Take &value);
+    Condition getCondition() const;
+    void setCondition(const Condition &value);
 
 protected:
     void paintEvent(QPaintEvent *);
