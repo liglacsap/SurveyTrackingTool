@@ -44,13 +44,18 @@ void EMSTransmission::setSSID(string ssid)
     message.append(ssid);
 }
 
-void EMSTransmission::setSync(uint channel)
+void EMSTransmission::setSync(uint* channel, uint size)
 {
-    channel = 0;
+    string text = "";
+    for(uint i=0; i<size; i++){
+        text.append(static_cast<ostringstream*>( &(ostringstream() << channel[i]) )->str());
 
+        if(i < size-1) text.append(";");
+    }
+    text.append("'");
     // Not implemented yet
-    //message.append("_SY");
-    //message.append(ip);
+    message.append("_SY");
+    message.append(text);
 }
 
 void EMSTransmission::setOn(uint channel)

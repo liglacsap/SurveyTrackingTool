@@ -8,8 +8,6 @@ ConditionDialog::ConditionDialog(QWidget *parent) :
     ui->setupUi(this);
 
     QVector< QVector<QString> > values = CSVFileHandler::loadFile("../balls.csv");
-
-    qDebug() << values;
     this->ui->tableWidget->setRowCount(values.length());
 
 
@@ -23,8 +21,6 @@ ConditionDialog::ConditionDialog(QWidget *parent) :
 
         Condition Condition;
         Condition.size = values.at(row).at(0).toDouble();
-        Condition.hardness = values.at(row).at(1).toDouble();
-        Condition.name = values.at(row).at(2);
         Conditions.push_back(Condition);
 
     }

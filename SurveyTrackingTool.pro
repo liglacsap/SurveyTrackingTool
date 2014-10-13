@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     paint2dwidget.cpp \
     emstransmission.cpp \
     udpsocket.cpp \
-    conditiondialog.cpp
+    conditiondialog.cpp \
+    tracking.cpp
 
 HEADERS  += mainwindow.h \
     globals.h \
@@ -26,7 +27,9 @@ HEADERS  += mainwindow.h \
     emstransmission.h \
     udpsocket.h \
     csvfilehandler.h \
-    conditiondialog.h
+    conditiondialog.h \
+    tracking.h \
+    math.h
 
 FORMS    += mainwindow.ui \
     configurationdialog.ui \

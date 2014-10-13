@@ -8,7 +8,6 @@
 #include "globals.h"
 #include "conditiondialog.h"
 
-extern CapturedHand capturedHand;
 
 class Paint2DWidget : public QWidget
 {
@@ -16,12 +15,14 @@ class Paint2DWidget : public QWidget
 
 private:
     Condition condition;
+    CapturedHand hand;
 public:
     explicit Paint2DWidget(QWidget *parent = 0);
 
 
     Condition getCondition() const;
     void setCondition(const Condition &value);
+    void setCapturedHand(CapturedHand hand);
 
 protected:
     void paintEvent(QPaintEvent *);

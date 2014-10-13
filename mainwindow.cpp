@@ -9,8 +9,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     connect(&timer, SIGNAL(timeout()), ui->paintWidget, SLOT(update()));
-    //timer.start(10);
+    timer.start(10);
     user = 1;
+
 
 
 
@@ -32,7 +33,8 @@ MainWindow::MainWindow(QWidget *parent) :
     transmission.clearMessage();
     transmission.setMinimalChangeTime(1);
 
-    ui->gotoNextCondition->setEnabled(false);
+    file = new SurveyUserFileHandler("../final.csv");
+    file->openFileForWriting();
 }
 
 MainWindow::~MainWindow()
@@ -40,32 +42,18 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::setCapturedHand(CapturedHand *hand)
-{
-    this->capturedHand = hand;
-}
 
 void MainWindow::setConditions(QList<Condition> *conditions)
 {
-
     this->conditions = conditions;
 
-    conditionsMatrix = latinSquare(this->conditions->length());
+    conditionsMatrix = shuffled(this->conditions->length(), 5); //latinSquare(this->conditions->length());
     currentConditionIndex.x = 0;
     currentConditionIndex.y = 0;
 
     ui->conditionBallRadius->setText(QString::number(conditions->at(0).size));
-    ui->conditionHardnessLineEdit->setText(QString::number(conditions->at(0).hardness));
-    ui->conditionNameLineEdit->setText(conditions->at(0).name);
 
     ui->paintWidget->setCondition(getCurrentCondition());
-
-    ui->userSelectedBallLineEdit->setValidator(new QIntValidator(1, conditions->size(), this));
-}
-
-void MainWindow::setCapturedConditionHandData(CapturedConditionHandData* data)
-{
-    capturedConditionHandData = data;
 }
 
 Condition MainWindow::getCurrentCondition()
@@ -97,28 +85,6 @@ void MainWindow::on_actionCalibration_triggered()
  */
 void MainWindow::update(){
 
-    float ps = capturedHand->fingerRadius / getCurrentCondition().size * 10.0f;
-
-    ui->userFingerRadiusLineEdit->setText(QString::number(capturedHand->fingerRadius));
-
-    capturedHand->condition = conditionsMatrix[currentConditionIndex.x][currentConditionIndex.y];
-    capturedHand->run = currentConditionIndex.x;
-    capturedHand->user = user;
-
-
-    int f1 =  exp(120.0f*(1-ps));
-
-    int v = f1;
-    v = (v > 127) ? 127 : v;
-
-    if(v==INT_MIN)
-        v = 127;
-
-
-    transmission.clearMessage();
-    transmission.setIntensity(v);
-    socket->write(transmission.getMessage());
-
 }
 
 void MainWindow::gotoNextCondition()
@@ -135,9 +101,12 @@ void MainWindow::gotoNextCondition()
     }else
         currentConditionIndex.x++;
 
-    float max = conditionsMatrix.length()*conditionsMatrix.length()-1;
+    float max = (conditionsMatrix.length()*conditionsMatrix.length()-1)*2;
     float value = (currentConditionIndex.x + (currentConditionIndex.y*conditionsMatrix.length()));
     bar->setValue((int)(value / max * 100));
+
+    ui->surveyConditionLabel->setText(QString::number( currentConditionIndex.x ));
+    ui->surveyTrialLabel->setText(QString::number( currentConditionIndex.y ));
 
     QString msg = "Condition ";
     msg.append(QString::number(currentConditionIndex.x));
@@ -152,17 +121,24 @@ void MainWindow::gotoNextCondition()
 
     // update the Condition information for the ui
     ui->conditionBallRadius->setText(QString::number(getCurrentCondition().size));
-    ui->conditionHardnessLineEdit->setText(QString::number(getCurrentCondition().hardness));
-    ui->conditionNameLineEdit->setText(getCurrentCondition().name);
 
 
-    for(int i=capturedConditionHandData->hands.size()-1; i>=0; i--){
-        if(capturedConditionHandData->hands[i].userSelectedBall == -1){
-            capturedConditionHandData->hands[i].userSelectedBall = ui->userSelectedBallLineEdit->text().toInt();
-        }else
-            break;
-    }
+}
 
+void MainWindow::handCaptured(CapturedHand hand)
+{
+    ui->userFingerRadiusLineEdit->setText(QString::number(hand.fingerRadius));
+
+    ui->userFingerRadiusPercentLineEdit->setText(QString::number((int)(hand.fingerRadius * 100 / getCurrentCondition().size)));
+
+    ui->paintWidget->setCapturedHand(hand);
+
+    CapturedCondition condition;
+    condition.hand = hand;
+    condition.user = user;
+    condition.run = currentConditionIndex.y;
+    condition.condition = currentConditionIndex.x;
+    file->writeCapturedHand(condition);
 }
 
 
@@ -171,7 +147,8 @@ void MainWindow::gotoNextCondition()
  * will always be "Condition" current Condition (number) "_user_" current user (number) __timestamp__".csv."
  */
 void MainWindow::saveCondition(){
-
+    file->closeFileForWriting();
+/*
     QVector< QVector<QString> > values;
 
     // Create Captions for each column.
@@ -266,7 +243,7 @@ void MainWindow::saveCondition(){
     this->ui->statusBar->showMessage(msg);
 
     CSVFileHandler::saveFile(fileName, values);
-
+*/
 }
 
 
@@ -275,40 +252,44 @@ void MainWindow::saveCondition(){
  */
 void MainWindow::on_actionNew_triggered()
 {
-
     user++;
-    capturedConditionHandData->hands.clear();
 
 
 
     ui->conditionBallRadius->setText(QString::number(getCurrentCondition().size));
-    ui->conditionHardnessLineEdit->setText(QString::number(getCurrentCondition().hardness));
-    ui->conditionNameLineEdit->setText(getCurrentCondition().name);
-
 }
 
 void MainWindow::on_actionTake_Properties_triggered()
 {
+/*
     ConditionDialog ConditionDialog;
     ConditionDialog.exec();
+    */
+}
+void MainWindow::keyPressEvent(QKeyEvent* event){
+    int key = event->key();
+    if(key == Qt::Key_Enter || key == Qt::Key_Return){
+        bool ok;
+        int i = QInputDialog::getInt(this, tr("QInputDialog::getInteger()"),
+                                     tr("Ball:"), 0, 1, 12, 0, &ok);
+        if (ok){
+            qDebug() << i;
+            gotoNextCondition();
+
+        }
+
+    }
+    if(key == Qt::Key_Y){
+
+    }
+
+    if(key == Qt::Key_X){
+
+    }
 }
 
-
-void MainWindow::dataAdded(CapturedHand* hand)
+void MainWindow::on_MainWindow_destroyed()
 {
-    hand->emsIntensity = 666;
-}
-
-
-void MainWindow::on_gotoNextCondition_clicked()
-{
-    gotoNextCondition();
-    ui->userSelectedBallLineEdit->setText("");
-    ui->userSelectedBallLineEdit->setFocus();
-
-}
-
-void MainWindow::on_userSelectedBallLineEdit_textChanged(const QString &arg1)
-{
-     ui->gotoNextCondition->setEnabled(!arg1.isEmpty() && arg1 != "0");
+    // make sure that the file gets closed. Otherwise the file will be write protected until reboot by a zombieprocess
+    file->closeFileForWriting();
 }

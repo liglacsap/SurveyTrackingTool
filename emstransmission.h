@@ -8,7 +8,7 @@
 #include <vector>
 #include <sstream>
 
-
+#include <QDebug>
 
 
 enum PadStates{
@@ -50,7 +50,7 @@ public:
     void setProperty(string identifier, uint value);
     void setIP(string ip);
     void setSSID(string ssid);
-    void setSync(uint channel);
+    void setSync(uint* channel, uint size);
     void setOn(uint channel);
     void setOff(uint channel);
     void setFrequency(uint frequency);

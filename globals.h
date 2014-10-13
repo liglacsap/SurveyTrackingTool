@@ -8,43 +8,45 @@
 #include <QProcess>
 #include <QString>
 #include <QDebug>
+#include "tracking.h"
 
 using namespace std;
 
 struct Condition{
-    float hardness;
     float size;
-    QString name;
-
-    inline bool operator == (const Condition &b) const{
-        return (hardness == b.hardness) &&
-                (size == b.size) &&
-                (name == b.name);
-    }
 };
 
-struct CapturedHand{
-    QVector3D palmPosition;
-    QList<QVector3D> fingers;
-    int emsIntensity;
 
-    double fingerRadius;
-    QString type;
-
-    int condition;
-    int run;
-    int user;
-    int userSelectedBall = -1;
-};
 
 
 struct CapturedConditionHandData{
     QList<CapturedHand> hands;
 };
 
-extern CapturedHand capturedHand;
+//extern CapturedHand capturedHand;
 
 
+inline QList<QList <int>> shuffled(int size, int trials){
+    QList<QList <int>> result;
+
+    QList<int> values;
+    for(int i=0; i<size; i++){
+        values.push_back(i);
+    }
+
+    for(int i=0; i<trials; i++){
+        QList<int> shuffled = values;
+        for(int j=0; j<size*size; j++){
+            shuffled.swap(rand() % size, rand() % size);
+        }
+
+        result.push_back(shuffled);
+    }
+
+
+
+    return result;
+}
 
 inline QList<QList <int>> latinSquare(int size){
     QList<QList <int>> result;

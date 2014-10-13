@@ -10,6 +10,11 @@ void Paint2DWidget::setCondition(const Condition &value)
 {
     condition = value;
 }
+
+void Paint2DWidget::setCapturedHand(CapturedHand hand)
+{
+    this->hand = hand;
+}
 Paint2DWidget::Paint2DWidget(QWidget *parent) :
     QWidget(parent)
 {
@@ -23,8 +28,7 @@ void Paint2DWidget::paintEvent(QPaintEvent *)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    qDebug() << capturedHand.fingerRadius << "  " << condition.size;
-    float ps = (capturedHand.fingerRadius) / condition.size;
+    float ps = hand.fingerRadius / condition.size;
     ps = (ps > 2) ? 2 : ps;
 
 
@@ -62,4 +66,5 @@ void Paint2DWidget::paintEvent(QPaintEvent *)
     painter.setPen(pen);
     painter.setBrush(QColor("#bdc3c7"));
     painter.drawEllipse(QPoint(this->width() / 2, this->height() / 2), hardSize, hardSize);
+
 }

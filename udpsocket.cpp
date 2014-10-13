@@ -4,14 +4,9 @@ UDPSocket::UDPSocket(QObject *parent) :
     QObject(parent)
 {
     bool res = ping("192.168.3.10");
+
     if(!res){
-        QMessageBox msgBox;
-        msgBox.setText("EMS System is not connected via WLAN");
-        msgBox.setInformativeText("No EMS Feedback will be available");
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setIcon(QMessageBox::Warning);
-        msgBox.exec();
+
     }
 
 

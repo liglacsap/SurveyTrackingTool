@@ -32,6 +32,8 @@
 
 #include <QProgressBar>
 #include <QSpacerItem>
+#include <QKeyEvent>
+#include <QInputDialog>
 
 #include "udpsocket.h"
 
@@ -56,8 +58,6 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
-    CapturedHand* capturedHand;
-    CapturedConditionHandData* capturedConditionHandData;
     QList<Condition>* conditions;
 
     QList<QList<int>> conditionsMatrix;
@@ -66,9 +66,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void setCapturedHand(CapturedHand* hand);
     void setConditions(QList<Condition>* conditions);
-    void setCapturedConditionHandData(CapturedConditionHandData* data);
 
     Condition getCurrentCondition();
 private slots:
@@ -83,14 +81,13 @@ private slots:
     void update();
 
     void gotoNextCondition();
-
-
-    void on_gotoNextCondition_clicked();
-
-    void on_userSelectedBallLineEdit_textChanged(const QString &arg1);
+    void on_MainWindow_destroyed();
 
 public slots:
-    void dataAdded(CapturedHand* hand);
+    void handCaptured(CapturedHand hand);
+
+protected:
+    void keyPressEvent(QKeyEvent* event);
 private:
     Ui::MainWindow *ui;
     QProgressBar* bar;
@@ -114,6 +111,7 @@ private:
     EMSTransmission transmission;
     ConfigurationDialog dialog;
 
+    SurveyUserFileHandler* file;
 };
 
 #endif // MAINWINDOW_H
