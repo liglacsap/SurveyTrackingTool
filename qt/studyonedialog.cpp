@@ -166,7 +166,7 @@ void StudyOneDialog::update(){
 
 void StudyOneDialog::handCaptured(CapturedHand hand)
 {
-    hand.fingerRadius = hand.fingerRadius - offset;
+    hand.fingerRadius = hand.fingerRadius*2 - offset;
 
     ui->userFingerRadiusLineEdit->setText(QString::number(hand.fingerRadius));
 

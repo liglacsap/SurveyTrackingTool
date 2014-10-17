@@ -152,6 +152,7 @@ void StudyTwoDialog::swapRandom()
 
 void StudyTwoDialog::handCaptured(CapturedHand hand)
 {
+    hand.fingerRadius = hand.fingerRadius*2 - offset;
     ui->userFingerRadiusLineEdit->setText(QString::number(hand.fingerRadius));
 
     float size = 0;
