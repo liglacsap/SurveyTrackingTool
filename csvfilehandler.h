@@ -11,7 +11,11 @@
 #include <QDebug>
 #include <QFile>
 #include <QMessageBox>
+
+#include "structures.h"
 #include "tracking.h"
+
+
 using namespace std;
 
 
@@ -196,5 +200,24 @@ public:
     }
 
 };
+
+
+
+/**
+ * @brief Loads all Conditions saved in the file ../balls.csv.
+ */
+inline QList<Condition> loadConditionsFromFile(QString filename){
+    QVector< QVector<QString> > values = CSVFileHandler::loadFile("../balls.csv");
+    QList<Condition> Conditions;
+    for(int row=0; row<values.length(); row++){
+        Condition Condition;
+        Condition.size = values.at(row).at(0).toDouble();
+        Conditions.push_back(Condition);
+    }
+
+    return Conditions;
+}
+
+
 
 #endif // CSVFILEHANDLER_H

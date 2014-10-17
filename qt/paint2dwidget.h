@@ -5,8 +5,7 @@
 #include <QPainter>
 #include <QDebug>
 
-#include "globals.h"
-#include "conditiondialog.h"
+#include <structures.h>
 
 
 class Paint2DWidget : public QWidget

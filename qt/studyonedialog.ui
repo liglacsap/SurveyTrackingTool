@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>StudyOneDialog</class>
+ <widget class="QDialog" name="StudyOneDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1000</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1000</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>StudyOneTool</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../icons.qrc">
+    <normaloff>:/icons/emblem-presentation.png</normaloff>:/icons/emblem-presentation.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QMessageBox{
+	background: red;
+}</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout_3">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item row="1" column="0">
+      <widget class="QSplitter" name="splitter">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <widget class="QWidget" name="widget" native="true">
+        <layout class="QGridLayout" name="gridLayout_3">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="Paint2DWidget" name="paintWidget" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>480</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="widget_2" native="true">
+        <property name="styleSheet">
+         <string notr="true">background-color:#2c3e50;</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QGroupBox" name="groupBox">
+           <property name="minimumSize">
+            <size>
+             <width>300</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"> QGroupBox {
+     border: 1px solid #34495e;
+
+     margin-top: 10px; 
+ }
+
+ QGroupBox::title {
+     subcontrol-origin:margin;
+     subcontrol-position: top left;
+     padding: -8 5px;
+	color:white;
+ }</string>
+           </property>
+           <property name="title">
+            <string>Results</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="QGroupBox" name="groupBox_4">
+              <property name="title">
+               <string>Survey</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_4">
+               <item row="0" column="0">
+                <widget class="QWidget" name="widget_10" native="true">
+                 <layout class="QFormLayout" name="formLayout_3">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item row="0" column="0">
+                   <widget class="QWidget" name="widget_9" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_7">
+                     <property name="spacing">
+                      <number>0</number>
+                     </property>
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_4">
+                       <property name="styleSheet">
+                        <string notr="true">QLabel{
+	background: #2c3e50;
+	padding: 10px;
+	color: white;
+}</string>
+                       </property>
+                       <property name="text">
+                        <string>Feedback Type</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QWidget" name="widget_8" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_6">
+                     <property name="spacing">
+                      <number>0</number>
+                     </property>
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_10">
+                       <property name="styleSheet">
+                        <string notr="true">QLabel{
+	background: #2c3e50;
+	padding: 10px;
+	color: white;
+}</string>
+                       </property>
+                       <property name="text">
+                        <string>Trial</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QWidget" name="widget_7" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_5">
+                     <property name="spacing">
+                      <number>0</number>
+                     </property>
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_9">
+                       <property name="styleSheet">
+                        <string notr="true">QLabel{
+	background: #2c3e50;
+	padding: 10px;
+	color: white;
+}</string>
+                       </property>
+                       <property name="text">
+                        <string>Condition</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QWidget" name="widget_6" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_4">
+                     <property name="spacing">
+                      <number>0</number>
+                     </property>
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_7">
+                       <property name="styleSheet">
+                        <string notr="true">QLabel{
+	background: #2c3e50;
+	padding: 10px;
+	color: white;
+}</string>
+                       </property>
+                       <property name="text">
+                        <string>User</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="surveyFeedbackLabel">
+                    <property name="styleSheet">
+                     <string notr="true">QLabel{
+	background: #34495e;
+	padding: 10px;
+	color: #f1c40f;
+}</string>
+                    </property>
+                    <property name="text">
+                     <string>Value</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="surveyTrialLabel">
+                    <property name="styleSheet">
+                     <string notr="true">QLabel{
+	background: #34495e;
+	padding: 10px;
+	color: #f1c40f;
+}</string>
+                    </property>
+                    <property name="text">
+                     <string>0</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QLabel" name="surveyConditionLabel">
+                    <property name="styleSheet">
+                     <string notr="true">QLabel{
+	background: #34495e;
+	padding: 10px;
+	color: #f1c40f;
+}</string>
+                    </property>
+                    <property name="text">
+                     <string>0</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QLabel" name="surveyUserLabel">
+                    <property name="styleSheet">
+                     <string notr="true">QLabel{
+	background: #34495e;
+	padding: 10px;
+	color: #f1c40f;
+}</string>
+                    </property>
+                    <property name="text">
+                     <string>1</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_2">
+              <property name="styleSheet">
+               <string notr="true"> QGroupBox {
+     border: 1px solid #34495e;
+
+     margin-top: 10px; 
+ }
+
+ QGroupBox::title {
+     subcontrol-origin:margin;
+     subcontrol-position: top left;
+     padding: -8 5px;
+	color:white;
+ }</string>
+              </property>
+              <property name="title">
+               <string>Ball Properties</string>
+              </property>
+              <layout class="QFormLayout" name="formLayout_2">
+               <property name="fieldGrowthPolicy">
+                <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+               </property>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label">
+                 <property name="styleSheet">
+                  <string notr="true">QLabel{
+	background: #2c3e50;
+	padding: 10px;
+	color: white;
+}</string>
+                 </property>
+                 <property name="text">
+                  <string>Radius: (cm)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLineEdit" name="conditionBallRadius">
+                 <property name="styleSheet">
+                  <string notr="true"> QLineEdit {
+     border: 0px solid gray;
+     padding: 10px;
+     background: #34495e;
+     selection-background-color: #34495e;
+	color: #f1c40f;
+ }
+</string>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_3">
+              <property name="styleSheet">
+               <string notr="true"> QGroupBox {
+     border: 1px solid #34495e;
+
+     margin-top: 10px; 
+ }
+
+ QGroupBox::title {
+     subcontrol-origin:margin;
+     subcontrol-position: top left;
+     padding: -8 5px;
+	color:white;
+ }</string>
+              </property>
+              <property name="title">
+               <string>User</string>
+              </property>
+              <layout class="QFormLayout" name="formLayout">
+               <property name="fieldGrowthPolicy">
+                <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+               </property>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_2">
+                 <property name="styleSheet">
+                  <string notr="true">QLabel{
+	background: #2c3e50;
+	padding: 10px;
+	color: white;
+}</string>
+                 </property>
+                 <property name="text">
+                  <string>Radius: (cm)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLineEdit" name="userFingerRadiusLineEdit">
+                 <property name="styleSheet">
+                  <string notr="true"> QLineEdit {
+     border: 0px solid gray;
+     padding: 10px;
+     background: #34495e;
+     selection-background-color: #34495e;
+	color: #f1c40f;
+ }
+</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_3">
+                 <property name="styleSheet">
+                  <string notr="true">QLabel{
+	background: #2c3e50;
+	padding: 10px;
+	color: white;
+}</string>
+                 </property>
+                 <property name="text">
+                  <string>Radius (%)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLineEdit" name="userFingerRadiusPercentLineEdit">
+                 <property name="styleSheet">
+                  <string notr="true"> QLineEdit {
+     border: 0px solid gray;
+     padding: 10px;
+     background: #34495e;
+     selection-background-color: #34495e;
+	color: #f1c40f;
+ }
+</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_5">
+                 <property name="styleSheet">
+                  <string notr="true">QLabel{
+	background: #2c3e50;
+	padding: 10px;
+	color: white;
+}</string>
+                 </property>
+                 <property name="text">
+                  <string>Decision Time(ms)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLineEdit" name="lineEdit">
+                 <property name="styleSheet">
+                  <string notr="true"> QLineEdit {
+     border: 0px solid gray;
+     padding: 10px;
+     background: #34495e;
+     selection-background-color: #34495e;
+	color: #f1c40f;
+ }
+</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_6">
+                 <property name="styleSheet">
+                  <string notr="true">QLabel{
+	background: #2c3e50;
+	padding: 10px;
+	color: white;
+}</string>
+                 </property>
+                 <property name="text">
+                  <string>Intensity</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLineEdit" name="userIntensityLabel">
+                 <property name="styleSheet">
+                  <string notr="true"> QLineEdit {
+     border: 0px solid gray;
+     padding: 10px;
+     background: #34495e;
+     selection-background-color: #34495e;
+	color: #f1c40f;
+ }
+</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QWidget" name="widget_3" native="true">
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QPushButton" name="pushButton">
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
+                 <property name="text">
+                  <string>On</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_2">
+                 <property name="text">
+                  <string>Off</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QWidget" name="widget_4" native="true">
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionCalibration">
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/icons/spanner32.png</normaloff>:/icons/spanner32.png</iconset>
+   </property>
+   <property name="text">
+    <string>Calibration</string>
+   </property>
+  </action>
+  <action name="actionRestart_take">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/icons/exchange32.png</normaloff>:/icons/exchange32.png</iconset>
+   </property>
+   <property name="text">
+    <string>restart take</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionTake_Properties">
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/icons/wand32.png</normaloff>:/icons/wand32.png</iconset>
+   </property>
+   <property name="text">
+    <string>Take Properties</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Paint2DWidget</class>
+   <extends>QWidget</extends>
+   <header>paint2dwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>

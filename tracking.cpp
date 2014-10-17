@@ -1,8 +1,6 @@
 #include "tracking.h"
 
 
-
-
 /**
  * @brief Finds the corresponding name of a RigidBody
  * @param the id of the RigidBody
@@ -27,6 +25,7 @@ QString Tracking::getNameOfRigidBody(int id){
  */
 QList<QVector3D> Tracking::getAllMarker(sFrameOfMocapData* data, QVector3D handPalmPosition){
     QList<QVector3D> result;
+
 
     for (int i = 0; i < data->nOtherMarkers; i++){
         double x = data->OtherMarkers[i][0]*100;
@@ -60,13 +59,13 @@ QList<QVector3D> Tracking::getAllMarker(sFrameOfMocapData* data, QVector3D handP
         }
 
 
-        if (!belongsToRigidBody){
+         if (!belongsToRigidBody){
             QVector3D vec = QVector3D(x, y, z);
             double distance = vec.distanceToPoint(handPalmPosition);
 
             /* only add points that are in a specific range. Needed to filter
              * false tracked points */
-            if(distance > 1.0 && distance < 20.0){
+            if(distance > 1.0 && distance < 100.0){
                 result.push_back(QVector3D(x, y, z));
             }
         }
@@ -103,8 +102,8 @@ QVector3D Tracking::calculateHandPalmPosition(sFrameOfMocapData* data){
             }
 
             // calculate the hand palm position in cm.
-            if (marker.size() > 2)
-                result = calculateCircleCenter(marker[0], marker[1], marker[2]) * 100;
+            //if (marker.size() > 2)
+                //result = calculateCircleCenter(marker[0], marker[1], marker[2]) * 100;
         }
     }
 
@@ -112,10 +111,7 @@ QVector3D Tracking::calculateHandPalmPosition(sFrameOfMocapData* data){
 }
 
 
-
-int Tracking::createClient()
-{
-
+int Tracking::createClient(){
     // release previous server
     if (client){
         client->Uninitialize();
@@ -157,38 +153,12 @@ int Tracking::createClient()
         namedRigidBody.name = pRB->szName;
 
         namedRigidBodies.push_back(namedRigidBody);
-        qDebug() << QString::fromStdString(pRB->szName);
     }
 
     return ErrorCode_OK;
 }
 
-/**
- * @brief Calculates the intensity for the ems signal
- * @return the intensity as Interger value ranged by 0 up to 127
- */
-int Tracking::calculateIntensity(){
-    /*
-    float ps = capturedHand.fingerRadius / w->getCurrentCondition().size * 10.0f;
-
-
-    int f1 =  exp(120.0f*(1-ps));
-
-    int v = f1;
-    v = (v > 127) ? 127 : v;
-
-   if(v==INT_MIN)
-    v = 127;
-
-    return v;
-    */
-
-    return 0;
-}
-
-
 void Tracking::DataHandlerStatic(sFrameOfMocapData* data, void* pUserData){
-
     getInstance().DataHandler(data, pUserData);
 }
 
@@ -200,7 +170,7 @@ void Tracking::DataHandler(sFrameOfMocapData* data, void* pUserData){
 
 
     // Return if hand palm rigid body was not detected
-    if (data->nRigidBodies == 0) return;
+    //if (data->nRigidBodies == 0) return;
 
     capturedHand.palmPosition = calculateHandPalmPosition(data);
 
@@ -213,7 +183,6 @@ void Tracking::DataHandler(sFrameOfMocapData* data, void* pUserData){
     QListIterator<QVector3D> i(marker);
     while (i.hasNext())
          capturedHand.fingers.push_back(i.next());
-
 
     if(capturedHand.fingers.size() == 5){
         for(int i=0; i<data->nRigidBodies; i++){
@@ -247,9 +216,7 @@ void Tracking::DataHandler(sFrameOfMocapData* data, void* pUserData){
 
         // kind of stabilization
         //qDebug() << ceil(capturedHand.fingerRadius * 100) / 100;
-        capturedHand.emsIntensity = calculateIntensity();
-
-       //capturedConditionHandData.hands.push_back(capturedHand);
+        //capturedHand.emsIntensity = calculateIntensity();
 
         emit(handCaptured(capturedHand));
     }

@@ -3,8 +3,8 @@
 
 #include <QDialog>
 #include <QDebug>
-#include "globals.h"
-#include "csvfilehandler.h"
+#include <csvfilehandler.h>
+
 
 namespace Ui {
 class ConditionDialog;
