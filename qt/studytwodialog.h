@@ -67,6 +67,8 @@ private slots:
 
     void on_showChooseDialogButton_clicked();
 
+    void on_StudyTwoDialog_destroyed();
+
 private:
     Ui::StudyTwoDialog *ui;
 
@@ -78,6 +80,8 @@ private:
     QTimer timer;
 
     int intensity;
+    qint64 lastTimeStamp;
+    qint64 feedbackTimeBall[2];
 };
 
 #endif // MAINWINDOW_H

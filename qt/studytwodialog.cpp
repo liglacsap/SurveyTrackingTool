@@ -16,12 +16,6 @@ StudyTwoDialog::StudyTwoDialog(QWidget *parent) :
     transmission.clearMessage();
     transmission.setMinimalChangeTime(1);
 
-    file = new SurveyUserFileHandler("../final.csv");
-    file->openFileForWriting();
-
-
-    condition.user = 1; //startDialog.getUser();
-    condition.feedback = FEEDBACK_EMS; //startDialog.getFeedback();
 
     ui->surveyUserLabel->setText(QString::number(condition.user));
     ui->surveyFeedbackLabel->setText(condition.feedback);
@@ -30,6 +24,21 @@ StudyTwoDialog::StudyTwoDialog(QWidget *parent) :
     ui->ballWidget->show();
 
     conditionCounter = 0;
+
+    lastTimeStamp = QDateTime::currentMSecsSinceEpoch();
+}
+
+void StudyTwoDialog::setUser(int user)
+{
+    this->user = user;
+    ui->surveyUserLabel->setText(QString::number(this->user));
+
+    QString path = "../Study_Results/study2_"+QString::number(user);
+    path.append(".csv");
+    qDebug() << path;
+    file = new Study2FileHandler(path);
+    qDebug() << ((Study2FileHandler*)file)->openFileForWriting();
+
 }
 void StudyTwoDialog::setConditions(QList<Condition> *conditions){
     currentConditionIndex.x = 0;
@@ -48,9 +57,29 @@ StudyTwoDialog::~StudyTwoDialog()
 {
     delete ui;
 }
+void StudyTwoDialog::on_StudyTwoDialog_destroyed()
+{
+    // make sure that the file gets closed. Otherwise the file will be write protected until reboot by a zombieprocess
+    ((Study2FileHandler*)file)->closeFileForWriting();
+}
 
 
 void StudyTwoDialog::gotoNextCondition(int guessedBall){
+    QVector<QString> row;
+    row.push_back(QString::number(this->user));
+    row.push_back(QString::number(currentConditionIndex.x));
+    row.push_back(QString::number(currentConditionIndex.y));
+    row.push_back(this->feedback);
+
+    row.push_back(QString::number(conditions->at(currentConditionIndex.x).size));
+    row.push_back(QString::number(conditions->at(currentConditionIndex.y).size));
+
+    row.push_back(QString::number(feedbackTimeBall[0]));
+    row.push_back(QString::number(feedbackTimeBall[1]));
+
+    row.push_back(QString::number(guessedBall+1));
+    ((Study2FileHandler*)file)->writeRow(row);
+
     bool res;
     if(guessedBall == 0){
         res = conditions->at(currentConditionIndex.x).size >= conditions->at(currentConditionIndex.y).size;
@@ -91,17 +120,23 @@ void StudyTwoDialog::gotoNextCondition(int guessedBall){
     ui->conditionBallRadius->setText(QString::number(conditions->at(currentConditionIndex.x).size));
     ui->conditionBall2Radius->setText(QString::number(conditions->at(currentConditionIndex.y).size));
 
+    ui->ballWidget->show();
+    ui->chooseWidget->hide();
+    state = SIMULATE_BALL1;
+
     qDebug() << turns;
     if(turns == 8 && round == 0){
         QMessageBox msgBox;
         QString text = "New Study Part ";
-        text.append(condition.feedback);
+        text.append(this->feedback);
         msgBox.setStyleSheet("background-color: #2c3e50 ; color : #f1c40f");
         msgBox.setText(text);
         msgBox.exec();
 
         round = 1;
         turns = 0;
+
+        this->feedback = (this->feedback == FEEDBACK_EMS) ? FEEDBACK_REAL : FEEDBACK_EMS;
     }else if(turns == 8 && round == 1){
         QMessageBox msgBox;
         QString text = "Study 2 finisched";
@@ -114,16 +149,9 @@ void StudyTwoDialog::gotoNextCondition(int guessedBall){
     }
 
 
-    ui->ballWidget->show();
-    ui->chooseWidget->hide();
-    state = SIMULATE_BALL1;
+
 }
 
-void StudyTwoDialog::setUser(int user)
-{
-    this->user = user;
-    ui->surveyUserLabel->setText(QString::number(this->user));
-}
 
 void StudyTwoDialog::setFeedback(QString feedback){
     this->feedback = feedback;
@@ -188,7 +216,8 @@ void StudyTwoDialog::on_simulateBall2Button_clicked()
     ui->simulateBall2Button->setEnabled(false);
     ui->showChooseDialogButton->setEnabled(true);
 
-
+    feedbackTimeBall[0] = QDateTime::currentMSecsSinceEpoch() - lastTimeStamp;
+    lastTimeStamp = QDateTime::currentMSecsSinceEpoch();
 }
 
 void StudyTwoDialog::on_showChooseDialogButton_clicked()
@@ -202,4 +231,7 @@ void StudyTwoDialog::on_showChooseDialogButton_clicked()
     ui->chooseWidget->show();
 
     ui->simulateLabel->setText("Simulate Ball 1");
+
+    feedbackTimeBall[1] = QDateTime::currentMSecsSinceEpoch() - lastTimeStamp;
+    lastTimeStamp = QDateTime::currentMSecsSinceEpoch();
 }

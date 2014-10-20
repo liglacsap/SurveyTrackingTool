@@ -66,8 +66,8 @@ void StudyOneDialog::setUser(int user)
     QString path = "../Study_Results/study1_"+QString::number(user);
     path.append(".csv");
     qDebug() << path;
-    file = new SurveyUserFileHandler(path);
-    file->openFileForWriting();
+    file = new Study1FileHandler(path);
+    ((Study1FileHandler*)file)->openFileForWriting();
 }
 
 void StudyOneDialog::setFeedback(QString feedback){
@@ -191,7 +191,7 @@ void StudyOneDialog::handCaptured(CapturedHand hand)
     condition.user = user;
     condition.run = currentConditionIndex.y;
     condition.condition = currentConditionIndex.x;
-    file->writeCapturedHand(condition);
+    ((Study1FileHandler*)file)->writeCapturedHand(condition);
 }
 
 
@@ -209,7 +209,7 @@ void StudyOneDialog::on_actionTake_Properties_triggered()
 void StudyOneDialog::on_StudyOneDialog_destroyed()
 {
     // make sure that the file gets closed. Otherwise the file will be write protected until reboot by a zombieprocess
-    file->closeFileForWriting();
+    ((Study1FileHandler*)file)->closeFileForWriting();
 }
 
 
