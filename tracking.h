@@ -12,6 +12,7 @@
 #include <QVector3D>
 #include <QProcess>
 #include <QDebug>
+#include <QDateTime>
 
 #include "csvfilehandler.h"
 
@@ -162,7 +163,11 @@ inline bool ping(QString ip)
        double radius = (t.length() * v.length() * u.length()) /
            (2 * (QVector3D::crossProduct(t, v)).length());
 
-       return 2*radius-1.0f;
+       return radius;
+   }
+
+   inline double calculateCircleDiameter(QVector3D p1, QVector3D p2, QVector3D p3){
+        return calculateCircleRadius(p1, p2, p3) * 2.0f;
    }
 
    /**
@@ -228,6 +233,9 @@ public:
      * @return
      */
     int createClient();
+
+    void debugRigidBody(sRigidBodyData rb);
+    bool rigidBodyWasTracked(sRigidBodyData rb);
 };
 
 #endif // TRACKING_H

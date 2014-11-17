@@ -25,7 +25,10 @@ StudyOneDialog::StudyOneDialog(QWidget *parent) :
     transmission.clearMessage();
     transmission.setMinimalChangeTime(1);
 
-
+    transmission.clearMessage();
+    transmission.setIntensity(0);
+    transmission.setOn(0);
+    socket->write(transmission.getMessage());
 
 
     ui->surveyUserLabel->setText(QString::number(condition.user));
@@ -46,24 +49,25 @@ void StudyOneDialog::setConditions(QList<Condition> *conditions)
 {
     TrackingDialog::setConditions(conditions);
 
-        this->conditions = conditions;
+    this->conditions = conditions;
 
-        conditionsMatrix = shuffled(this->conditions->length(), 5); //latinSquare(this->conditions->length());
+    conditionsMatrix = shuffled(this->conditions->length(), 5); //latinSquare(this->conditions->length());
 
-        currentConditionIndex.x = 0;
-        currentConditionIndex.y = 0;
-
+    currentConditionIndex.x = 0;
+    currentConditionIndex.y = 0;
 
     ui->conditionBallRadius->setText(QString::number(conditions->at(conditionsMatrix[0][0]).size));
     ui->paintWidget->setCondition(getCurrentCondition());
 }
 
-void StudyOneDialog::setUser(int user)
+void StudyOneDialog::setUser(User user)
 {
     this->user = user;
-    ui->surveyUserLabel->setText(QString::number(this->user));
+    ui->surveyUserLabel->setText(QString::number(this->user.number));
 
-    QString path = "../Study_Results/study1_"+QString::number(user);
+    QString path = "../../Study_Results/"+QString::number(user.number);
+    path.append("_ems_vs_real_");
+    path.append(QString::number(QDateTime::currentMSecsSinceEpoch()));
     path.append(".csv");
     qDebug() << path;
     file = new Study1FileHandler(path);
@@ -72,7 +76,7 @@ void StudyOneDialog::setUser(int user)
 
 void StudyOneDialog::setFeedback(QString feedback){
     this->feedback = feedback;
-     condition.feedback = feedback;
+    condition.feedback = feedback;
     ui->surveyFeedbackLabel->setText(feedback);
 }
 
@@ -82,23 +86,16 @@ void StudyOneDialog::gotoNextCondition(){
         if(currentConditionIndex.y == conditionsMatrix.length()-1){
             condition.feedback = (condition.feedback == FEEDBACK_EMS) ? FEEDBACK_REAL : FEEDBACK_EMS;
 
-            if(conditionCounter-1 == (conditionsMatrix[1].length()*conditionsMatrix.length()-1)*2 ){
+            if(conditionCounter-1 == (conditionsMatrix[1].length()*conditionsMatrix.length()-1) ){
+            }else{
                 QMessageBox msgBox;
-                QString text = "Study 1 finisched ";
-                text.append(condition.feedback);
+                QString text = "Study 2 finished";
                 msgBox.setStyleSheet("background-color: #2c3e50 ; color : #f1c40f");
                 msgBox.setText(text);
                 msgBox.exec();
 
                 saveCondition();
                 this->close();
-            }else{
-                QMessageBox msgBox;
-                QString text = "New Study Part ";
-                text.append(condition.feedback);
-                msgBox.setStyleSheet("background-color: #2c3e50 ; color : #f1c40f");
-                msgBox.setText(text);
-                msgBox.exec();
             }
 
             currentConditionIndex.x=0;
@@ -113,8 +110,8 @@ void StudyOneDialog::gotoNextCondition(){
 
 
 
-    float max = (conditionsMatrix[0].length()*conditionsMatrix.length()-1);
-    float value = (currentConditionIndex.x + (currentConditionIndex.y*conditionsMatrix[0].length()));
+    //float max = (conditionsMatrix[0].length()*conditionsMatrix.length()-1);
+    //float value = (currentConditionIndex.x + (currentConditionIndex.y*conditionsMatrix[0].length()));
 
 
     ui->surveyConditionLabel->setText(QString::number( currentConditionIndex.x ));
@@ -177,10 +174,13 @@ void StudyOneDialog::handCaptured(CapturedHand hand)
 
     float ps = hand.fingerRadius /getCurrentCondition().size;
     int f1 = exp(120.0f*(1-ps));
+
     v = f1;
-    v = (v > 127) ? 127 : v;
+    v = (v > 100) ? 100 : v;
     if(v==INT_MIN)
-    v = 127;
+    v = 100;
+
+
 
        ui->userIntensityLabel->setText(QString::number(v));
 
@@ -188,7 +188,7 @@ void StudyOneDialog::handCaptured(CapturedHand hand)
     condition.ballSize = getCurrentCondition().size;
     condition.intensity = v;
     condition.hand = hand;
-    condition.user = user;
+    condition.user = user.number;
     condition.run = currentConditionIndex.y;
     condition.condition = currentConditionIndex.x;
     ((Study1FileHandler*)file)->writeCapturedHand(condition);
@@ -239,4 +239,17 @@ void StudyOneDialog::keyPressEvent(QKeyEvent* event){
     if(key == Qt::Key_X){
 
     }
+}
+
+void StudyOneDialog::on_horizontalSlider_sliderMoved(int position)
+{
+    float ps = position/100.0f /getCurrentCondition().size;
+    int f1 = exp(120.0f*(1-ps));
+
+    v = f1;
+    v = (v > 100) ? 100 : v;
+    if(v==INT_MIN)
+    v = 100;
+
+    qDebug() << ps << "   " << f1;
 }

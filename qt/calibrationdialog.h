@@ -27,7 +27,7 @@
 #include <random>
 #include <chrono>
 
-#include <qt/trackingdialog.h>
+#include "trackingdialog.h"
 
 using namespace std;
 
@@ -55,6 +55,8 @@ public slots:
 
 private slots:
         void on_pushButton_clicked();
+
+        void on_lineEdit_3_textChanged(const QString &arg1);
 
 private:
     Ui::CalibrationDialog *ui;

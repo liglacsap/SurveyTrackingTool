@@ -7,7 +7,7 @@
 #include <QTranslator>
 #include <QVector3D>
 #include <QObject>
-
+#include <QDesktopWidget>
 #include "tracking.h"
 
 
@@ -22,9 +22,11 @@ int main(int argc, char *argv[])
     // 0 ist der Pfad
     //a.arguments()[1]
 
+    QRect res = QApplication::desktop()->screenGeometry(0);
 
 
     w = new MainDialog();
+    w->move(QPoint(res.x()+res.width()/2-w->width()/2, res.y()+res.height()/2-w->height()/2));
     //w->setConditions(&Conditions);
     w->show();
 

@@ -18,7 +18,13 @@ SOURCES += main.cpp\
     qt/studyonedialog.cpp \
     qt/studytwodialog.cpp \
     qt/calibrationdialog.cpp \
-    qt/maindialog.cpp
+    qt/maindialog.cpp \
+    testdialog.cpp \
+    tracking.cpp \
+    ems/emstransmission.cpp \
+    ems/udpsocket.cpp \
+    qt/studytwomasterdialog.cpp
+
 
 
 HEADERS  += qt/configurationdialog.h \
@@ -28,15 +34,24 @@ HEADERS  += qt/configurationdialog.h \
     qt/calibrationdialog.h \
     qt/paint2dwidget.h \
     csvfilehandler.h \
-    qt/maindialog.h
-
+    qt/maindialog.h \
+    testdialog.h \
+    tracking.h \
+    csvfilehandler.h \
+    ems/emstransmission.h \
+    ems/udpsocket.h \
+    structures.h \
+    qt/trackingdialog.h \
+    qt/studytwomasterdialog.h
 
 FORMS    += qt/configurationdialog.ui \
     qt/conditiondialog.ui \
     qt/studyonedialog.ui \
     qt/studytwodialog.ui \
     qt/maindialog.ui \
-    qt/calibrationdialog.ui
+    qt/calibrationdialog.ui \
+    testdialog.ui \
+    qt/studytwomasterdialog.ui
 
 
 win32:LIBS += -L"C:\Users\lab\Desktop\Gil Engel Bachelor Thesis\NatNet_SDK_2.6\lib\x64" -lNatNetLib
@@ -44,12 +59,12 @@ win32:LIBS += -L"C:\Users\lab\Desktop\Gil Engel Bachelor Thesis\NatNet_SDK_2.6\l
 RESOURCES += \
     icons.qrc
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Build/Tracking/release/ -lTracking
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Build/Tracking/debug/ -lTracking
+#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Build/Tracking/release/ -lTracking
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Build/Tracking/debug/ -lTracking
 
 INCLUDEPATH += $$PWD/../NatNet_SDK_2.6/include
-INCLUDEPATH += $$PWD/../Tracking
-DEPENDPATH += $$PWD/../Tracking
+#INCLUDEPATH += $$PWD/../Tracking
+#DEPENDPATH += $$PWD/../Tracking
 
 SOURCES += main.cpp
 

@@ -35,11 +35,11 @@ QList<QVector3D> Tracking::getAllMarker(sFrameOfMocapData* data, QVector3D handP
         // Filter all points and only return the points which are not related to any rigid body
         bool belongsToRigidBody = false;
 
-
-
         for(int j=0; j<data->nRigidBodies; j++){
-            if(getNameOfRigidBody(data->RigidBodies[j].ID) == "RightHand" ||
-               getNameOfRigidBody(data->RigidBodies[j].ID) == "LeftHand"){
+
+            if((getNameOfRigidBody(data->RigidBodies[j].ID) == "RightHand" ||
+               getNameOfRigidBody(data->RigidBodies[j].ID) == "LeftHand") && rigidBodyWasTracked(data->RigidBodies[j])){
+               // debugRigidBody(data->RigidBodies[j]);
                 for (int m = 0; m < data->RigidBodies[j].nMarkers; m++){
                     double _x = data->RigidBodies[j].Markers[m][0] * 100;
                     double _y = data->RigidBodies[j].Markers[m][1] * 100;
@@ -60,11 +60,13 @@ QList<QVector3D> Tracking::getAllMarker(sFrameOfMocapData* data, QVector3D handP
 
 
          if (!belongsToRigidBody){
+
             QVector3D vec = QVector3D(x, y, z);
             double distance = vec.distanceToPoint(handPalmPosition);
 
             /* only add points that are in a specific range. Needed to filter
              * false tracked points */
+
             if(distance > 1.0 && distance < 100.0){
                 result.push_back(QVector3D(x, y, z));
             }
@@ -88,8 +90,8 @@ QVector3D Tracking::calculateHandPalmPosition(sFrameOfMocapData* data){
 
     // Loop through all rigid bodies. A rigid body needs to be defined in the OptiTrack Software Motive
     for (int i = 0; i < data->nRigidBodies; i++){
-        if(getNameOfRigidBody(data->RigidBodies[i].ID) == RIGHT_HAND_STRING ||
-           getNameOfRigidBody(data->RigidBodies[i].ID) == LEFT_HAND_STRING){
+        if((getNameOfRigidBody(data->RigidBodies[i].ID) == RIGHT_HAND_STRING ||
+           getNameOfRigidBody(data->RigidBodies[i].ID) == LEFT_HAND_STRING) && rigidBodyWasTracked(data->RigidBodies[i])){
 
 
             QList<QVector3D> marker;
@@ -102,8 +104,8 @@ QVector3D Tracking::calculateHandPalmPosition(sFrameOfMocapData* data){
             }
 
             // calculate the hand palm position in cm.
-            //if (marker.size() > 2)
-                //result = calculateCircleCenter(marker[0], marker[1], marker[2]) * 100;
+            if (marker.size() > 2)
+                result = calculateCircleCenter(marker[0], marker[1], marker[2]) * 100;
         }
     }
 
@@ -158,6 +160,16 @@ int Tracking::createClient(){
     return ErrorCode_OK;
 }
 
+void Tracking::debugRigidBody(sRigidBodyData rb)
+{
+    qDebug() << "ID:"<<rb.ID << " MEAN ERROR:" << rb.MeanError << " PARAMS:" << rb.params << " X:"<< rb.x << " Y:" << rb.y << " Z:" << rb.z << " QW:" << rb.qw << " QX:" << rb.qx << " QY:" << rb.qy << " QZ:" << rb.z;
+}
+
+bool Tracking::rigidBodyWasTracked(sRigidBodyData rb)
+{
+    return (rb.qx == rb.qy == rb.qz == rb.qw == 0);
+}
+
 void Tracking::DataHandlerStatic(sFrameOfMocapData* data, void* pUserData){
     getInstance().DataHandler(data, pUserData);
 }
@@ -167,6 +179,7 @@ void Tracking::DataHandler(sFrameOfMocapData* data, void* pUserData){
 
     // disable all debug information provided by the OptiTrack system
     pClient->SetVerbosityLevel(0);
+
 
 
     // Return if hand palm rigid body was not detected
@@ -186,16 +199,19 @@ void Tracking::DataHandler(sFrameOfMocapData* data, void* pUserData){
 
     if(capturedHand.fingers.size() == 5){
         for(int i=0; i<data->nRigidBodies; i++){
-            if(getNameOfRigidBody(data->RigidBodies[i].ID)==RIGHT_HAND_STRING){
-                capturedHand.type = RIGHT_HAND_STRING;
+            if(rigidBodyWasTracked(data->RigidBodies[i])){
+                if(getNameOfRigidBody(data->RigidBodies[i].ID)==RIGHT_HAND_STRING){
+                    capturedHand.type = RIGHT_HAND_STRING;
 
-                qSort(capturedHand.fingers.begin(), capturedHand.fingers.end(), vectorXGreaterThan);
-                break;
-            }else if(getNameOfRigidBody(data->RigidBodies[i].ID)==LEFT_HAND_STRING){
-                capturedHand.type = LEFT_HAND_STRING;
+                    qSort(capturedHand.fingers.begin(), capturedHand.fingers.end(), vectorXGreaterThan);
+                    break;
+                }else if(getNameOfRigidBody(data->RigidBodies[i].ID)==LEFT_HAND_STRING){
+                    capturedHand.type = LEFT_HAND_STRING;
 
-                qSort(capturedHand.fingers.begin(), capturedHand.fingers.end(), vectorXLessThan);
-                break;
+
+                    qSort(capturedHand.fingers.begin(), capturedHand.fingers.end(), vectorXLessThan);
+                    break;
+                }
             }
         }
 
@@ -213,10 +229,7 @@ void Tracking::DataHandler(sFrameOfMocapData* data, void* pUserData){
 
 
         capturedHand.fingerRadius = calculateCircleRadius(finger[0].position, finger[1].position, finger[2].position); // 5.5 is the radius of a marker
-
-        // kind of stabilization
-        //qDebug() << ceil(capturedHand.fingerRadius * 100) / 100;
-        //capturedHand.emsIntensity = calculateIntensity();
+        capturedHand.palmPosition = calculateHandPalmPosition(data);
 
         emit(handCaptured(capturedHand));
     }

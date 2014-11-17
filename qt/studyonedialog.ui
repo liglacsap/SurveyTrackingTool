@@ -219,7 +219,7 @@
 }</string>
                        </property>
                        <property name="text">
-                        <string>Trial</string>
+                        <string>Repetition</string>
                        </property>
                       </widget>
                      </item>
@@ -254,7 +254,7 @@
 }</string>
                        </property>
                        <property name="text">
-                        <string>Condition</string>
+                        <string>Run</string>
                        </property>
                       </widget>
                      </item>
@@ -551,6 +551,19 @@
                 </widget>
                </item>
               </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSlider" name="horizontalSlider">
+              <property name="maximum">
+               <number>1000</number>
+              </property>
+              <property name="value">
+               <number>1000</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
              </widget>
             </item>
             <item>

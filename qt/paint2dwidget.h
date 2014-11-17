@@ -5,7 +5,7 @@
 #include <QPainter>
 #include <QDebug>
 
-#include <structures.h>
+#include "../structures.h"
 
 
 class Paint2DWidget : public QWidget

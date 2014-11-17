@@ -7,6 +7,7 @@
 #include <QTime>
 #include <QDebug>
 #include <QFileDialog>
+#include <QDesktopWidget>
 
 #ifdef _WIN32
     #include <NatNetTypes.h>
@@ -29,7 +30,8 @@
 #include <chrono>
 
 
-#include <qt/trackingdialog.h>
+#include "trackingdialog.h"
+#include "studytwomasterdialog.h"
 
 #define SIMULATE_BALL1 0
 #define SIMULATE_BALL2 1
@@ -44,12 +46,16 @@ class StudyTwoDialog : public TrackingDialog
     Q_OBJECT
 protected:
     void gotoNextCondition(int guessedBall);
+
+    inline void saveCondition(){
+            ((Study2FileHandler*)file)->closeFileForWriting();
+    }
 public:
     explicit StudyTwoDialog(QWidget *parent = 0);
     ~StudyTwoDialog();
 
     void setConditions(QList<Condition> *conditions);
-    void setUser(int user);
+    void setUser(User user);
     void setFeedback(QString feedback);
 public slots:
     void handCaptured(CapturedHand hand);
@@ -62,7 +68,7 @@ private slots:
 
     void on_ballTwoSelectedButton_clicked();
 
-    void swapRandom();
+    bool swapRandom();
     void on_simulateBall2Button_clicked();
 
     void on_showChooseDialogButton_clicked();
@@ -72,15 +78,22 @@ private slots:
 private:
     Ui::StudyTwoDialog *ui;
 
+    StudyTwoMasterDialog masterDialog;
+
     int turns = 0;
     int round = 0;
     bool guessedRight = false;
     int state = SIMULATE_BALL1;
+    int stepSize = 2;
+    int referenceBallIndex;
+    int secondBallIndex;
+    bool ballsSwapped;
 
     QTimer timer;
 
     int intensity;
     qint64 lastTimeStamp;
+    qint64 timeStamp;
     qint64 feedbackTimeBall[2];
 };
 

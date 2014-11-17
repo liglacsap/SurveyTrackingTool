@@ -31,7 +31,7 @@
 #include "conditiondialog.h"
 
 
-#include <qt/trackingdialog.h>
+#include "trackingdialog.h"
 
 using namespace std;
 
@@ -50,7 +50,7 @@ public:
     ~StudyOneDialog();
 
     void setConditions(QList<Condition> *conditions);
-    void setUser(int user);
+    void setUser(User user);
     void setFeedback(QString feedback);
 protected:
     void keyPressEvent(QKeyEvent* event);
@@ -65,6 +65,8 @@ private slots:
 
 
     void on_StudyOneDialog_destroyed();
+
+    void on_horizontalSlider_sliderMoved(int position);
 
 protected slots:
         void gotoNextCondition();

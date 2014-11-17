@@ -2,7 +2,7 @@
 #include "ui_maindialog.h"
 
 MainDialog::MainDialog(QWidget *parent) :
-    QDialog(parent),
+    TrackingDialog(parent),
     ui(new Ui::MainDialog)
 {
     ui->setupUi(this);
@@ -13,6 +13,11 @@ MainDialog::MainDialog(QWidget *parent) :
     ui->buttonStudy2->setEnabled(false);
     ui->buttonCalibrate->setEnabled(false);
     ui->buttonTest->setEnabled(false);
+
+    socket = new UDPSocket(this);
+    transmission.clearMessage();
+    transmission.setIntensity(0);
+    socket->write(transmission.getMessage());
 }
 
 MainDialog::~MainDialog()
@@ -22,18 +27,51 @@ MainDialog::~MainDialog()
 
 void MainDialog::on_buttonTest_clicked()
 {
+    TestDialog dialog;
+
+    QObject::connect(&Tracking::getInstance(), SIGNAL(handCaptured(CapturedHand)),
+                     &dialog, SLOT(handCaptured(CapturedHand)));
+
+
+
+    QObject::connect(&Tracking::getInstance(), SIGNAL(handCaptured(CapturedHand)),
+                     &dialog, SLOT(handCaptured(CapturedHand)));
+
+    dialog.setConditions(&conditions);
+
+    User user;
+    user.number = ui->lineEdit->text().toInt();
+    user.current = ui->lineEdit_2->text().toFloat();
+    user.level = ui->lineEdit_3->text().toFloat();
+
+    QRect res = QApplication::desktop()->screenGeometry(1);
+    dialog.move(QPoint(res.x()+res.width()/2-dialog.width()/2, res.y()+res.height()/2-dialog.height()/2));
+
+    dialog.setUser(user);
+    dialog.setOffset(offset);
+    dialog.setFeedback(ui->listWidget->currentItem()->text());
+
+    transmission.clearMessage();
+    transmission.setOff(0);
+    transmission.setIntensity(0);
+    socket->write(transmission.getMessage());
+
+    dialog.exec();
+
 
 }
 
 void MainDialog::on_buttonCalibrate_clicked()
 {
-    ui->buttonCalibrate->setEnabled(false);
+    //ui->buttonCalibrate->setEnabled(false);
     CalibrationDialog dialog;
 
 
     QObject::connect(&Tracking::getInstance(), SIGNAL(handCaptured(CapturedHand)),
                      &dialog, SLOT(handCaptured(CapturedHand)));
 
+    QRect res = QApplication::desktop()->screenGeometry(0);
+    dialog.move(QPoint(res.x()+res.width()/2-dialog.width()/2, res.y()+res.height()/2-dialog.height()/2));
     dialog.exec();
     offset = dialog.getOffset();
 
@@ -50,8 +88,18 @@ void MainDialog::on_buttonStudy1_clicked()
     QObject::connect(&Tracking::getInstance(), SIGNAL(handCaptured(CapturedHand)),
                      &dialog, SLOT(handCaptured(CapturedHand)));
 
+   // QRect screenres = QApplication::desktop()->screenGeometry(1/*screenNumber*/);
+
     dialog.setConditions(&conditions);
-    dialog.setUser(ui->lineEdit->text().toInt());
+
+    User user;
+    user.number = ui->lineEdit->text().toInt();
+    user.current = ui->lineEdit_2->text().toFloat();
+    user.level = ui->lineEdit_3->text().toFloat();
+
+    QRect res = QApplication::desktop()->screenGeometry(0);
+    dialog.move(QPoint(res.x()+res.width()/2-dialog.width()/2, res.y()+res.height()/2-dialog.height()/2));
+    dialog.setUser(user);
     dialog.setOffset(offset);
     dialog.setFeedback(ui->listWidget->currentItem()->text());
     dialog.exec();
@@ -67,7 +115,15 @@ void MainDialog::on_buttonStudy2_clicked()
                      &dialog, SLOT(handCaptured(CapturedHand)));
 
     dialog.setConditions(&conditions);
-    dialog.setUser(ui->lineEdit->text().toInt());
+
+    User user;
+    user.number = ui->lineEdit->text().toInt();
+    user.current = ui->lineEdit_2->text().toFloat();
+    user.level = ui->lineEdit_3->text().toFloat();
+
+    QRect res = QApplication::desktop()->screenGeometry(1);
+    dialog.move(QPoint(res.x()+res.width()/2-dialog.width()/2, res.y()+res.height()/2-dialog.height()/2));
+    dialog.setUser(user);
     dialog.setOffset(this->offset);
     dialog.setFeedback(ui->listWidget->currentItem()->text());
     dialog.exec();
@@ -80,8 +136,8 @@ void MainDialog::on_listWidget_currentTextChanged(const QString &currentText)
         ui->buttonTest->setEnabled(true);
     }
 
-    ui->lineEdit->setEnabled(false);
-    ui->listWidget->setEnabled(false);
+    //ui->lineEdit->setEnabled(false);
+    //ui->listWidget->setEnabled(false);
 }
 
 void MainDialog::on_lineEdit_textChanged(const QString &arg1)

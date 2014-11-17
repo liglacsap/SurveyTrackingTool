@@ -6,8 +6,8 @@
 #include <QTime>
 #include <QTimer>
 
-#include <ems/udpsocket.h>
-#include <ems/emstransmission.h>
+#include "../ems/udpsocket.h"
+#include "../ems/emstransmission.h"
 
 namespace Ui {
 class ConfigurationDialog;

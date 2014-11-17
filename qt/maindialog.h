@@ -2,16 +2,19 @@
 #define MAINDIALOG_H
 
 #include <QDialog>
+#include <QApplication>
+#include <QDesktopWidget>
 
 #include "studyonedialog.h"
 #include "studytwodialog.h"
 #include "calibrationdialog.h"
+#include "../testdialog.h"
 
 namespace Ui {
 class MainDialog;
 }
 
-class MainDialog : public QDialog
+class MainDialog  : public TrackingDialog
 {
     Q_OBJECT
 

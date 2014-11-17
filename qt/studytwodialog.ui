@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1060</width>
+    <width>1080</width>
     <height>550</height>
    </rect>
   </property>
@@ -45,21 +45,42 @@
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <widget class="QWidget" name="ballWidget" native="true">
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
             <widget class="QLabel" name="simulateLabel">
              <property name="styleSheet">
-              <string notr="true">     font: bold 28px;</string>
+              <string notr="true"/>
              </property>
              <property name="text">
-              <string>Simulate Ball 1</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:24pt; font-weight:600;&quot;&gt;Simuliere Ball 1,&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;Bevor du fortfahren kannst, musst du deine Hand &lt;/span&gt;&lt;span style=&quot; font-size:18pt; text-decoration: underline;&quot;&gt;öffnen&lt;/span&gt;&lt;span style=&quot; font-size:18pt; font-style:italic;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="simulateBall2Button">
-             <property name="styleSheet">
-              <string notr="true"> QPushButton {
+            <widget class="QWidget" name="widget_11" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="simulateBall2Button">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"> QPushButton {
      background-color: #ecf0f1;
      border-style: outset;
      border-width: 2px;
@@ -75,19 +96,25 @@
      background-color: #95a5a6;
      border-style: inset;
  }</string>
-             </property>
-             <property name="text">
-              <string>Simulate Next</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="showChooseDialogButton">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="styleSheet">
-              <string notr="true"> QPushButton {
+                </property>
+                <property name="text">
+                 <string>Greife nächsten Ball</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="showChooseDialogButton">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"> QPushButton {
      background-color: #ecf0f1;
      border-style: outset;
      border-width: 2px;
@@ -103,10 +130,13 @@
      background-color: #95a5a6;
      border-style: inset;
  }</string>
-             </property>
-             <property name="text">
-              <string>Choose</string>
-             </property>
+                </property>
+                <property name="text">
+                 <string>Wähle</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
@@ -114,49 +144,30 @@
         </item>
         <item>
          <widget class="QWidget" name="chooseWidget" native="true">
-          <layout class="QHBoxLayout" name="horizontalLayout">
+          <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
-            <widget class="QPushButton" name="ballOneSelectedButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
+            <widget class="QLabel" name="label">
              <property name="styleSheet">
-              <string notr="true"> QPushButton {
-     background-color: #ecf0f1;
-     border-style: outset;
-     border-width: 2px;
-     border-color: #2c3e50;
-     font: bold 28px;
-     min-width: 10em;
-     padding: 6px;
- }
- QPushButton:hover {
-     background-color: #bdc3c7;
-     border-style: inset;
- }
- QPushButton:pressed {
-     background-color: #95a5a6;
-     border-style: inset;
- }</string>
+              <string notr="true">     font: bold 28px;</string>
              </property>
              <property name="text">
-              <string>Ball 1</string>
+              <string>Welcher Ball ist größer?</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="ballTwoSelectedButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="styleSheet">
-              <string notr="true"> QPushButton {
+            <widget class="QWidget" name="widget_5" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QPushButton" name="ballOneSelectedButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"> QPushButton {
      background-color: #ecf0f1;
      border-style: outset;
      border-width: 2px;
@@ -173,10 +184,45 @@
      background-color: #95a5a6;
      border-style: inset;
  }</string>
-             </property>
-             <property name="text">
-              <string>Ball 2</string>
-             </property>
+                </property>
+                <property name="text">
+                 <string>Ball 1 ist größer</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="ballTwoSelectedButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"> QPushButton {
+     background-color: #ecf0f1;
+     border-style: outset;
+     border-width: 2px;
+     border-color: #2c3e50;
+     font: bold 28px;
+     min-width: 10em;
+     padding: 6px;
+ }
+ QPushButton:hover {
+     background-color: #bdc3c7;
+     border-style: inset;
+ }
+ QPushButton:pressed {
+     background-color: #95a5a6;
+     border-style: inset;
+ }</string>
+                </property>
+                <property name="text">
+                 <string>Ball 2 ist größer</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>

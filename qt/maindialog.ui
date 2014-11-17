@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>328</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,11 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEdit"/>
+       <widget class="QLineEdit" name="lineEdit">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_2">
@@ -57,6 +61,26 @@
         </item>
        </widget>
       </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="lineEdit_2"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Stromstärke</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Stromlevel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="lineEdit_3"/>
+      </item>
      </layout>
     </widget>
    </item>
@@ -81,14 +105,17 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="buttonStudy1">
+       <widget class="QPushButton" name="buttonStudy2">
         <property name="text">
          <string>Start Study 1</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="buttonStudy2">
+       <widget class="QPushButton" name="buttonStudy1">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="text">
          <string>Start Study 2</string>
         </property>
